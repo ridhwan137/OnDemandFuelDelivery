@@ -131,6 +131,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 cvRon95.setCardBackgroundColor(Color.rgb(255, 199, 0));
+                txtRon95.setTextColor(Color.WHITE);
                 cvRon97.setCardBackgroundColor(Color.WHITE);
                 cvDiesel.setCardBackgroundColor(Color.WHITE);
             }
