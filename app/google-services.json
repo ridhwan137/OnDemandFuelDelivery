@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "236831083357",
+    "project_id": "bak-mai",
+    "storage_bucket": "bak-mai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236831083357:android:58ad0d4041315dc040b6b4",
+        "android_client_info": {
+          "package_name": "my.edu.utem.ftmk.ondemandfueldelivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236831083357-8bnmmodg6rfkrnr27e3pmfnm8i46lrre.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "my.edu.utem.ftmk.ondemandfueldelivery",
+            "certificate_hash": "08e7f2e3d6422db6b19ad5d0b50ddd840ba1bd04"
+          }
+        },
+        {
+          "client_id": "236831083357-iksn1nv2lkqv0abvri397a2bqg0ahsa8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEsLUYYowTrPBkfqRU7cqN2AY6UFpmRa4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236831083357-iksn1nv2lkqv0abvri397a2bqg0ahsa8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
