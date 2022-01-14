@@ -14,16 +14,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnDemandFuelDelivery">
         <activity
-            android:name=".MapActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".LoginActivity"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".MapActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
         </activity>
 
         <meta-data
@@ -37,7 +44,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBx-uRJyPlOUy1meGoi7yvUzgvHIN4pqeY" />
-
     </application>
 
 </manifest>
