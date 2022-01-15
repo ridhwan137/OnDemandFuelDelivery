@@ -32,6 +32,13 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toRegisterActivity();
+            }
+        });
     }
 
     @Override
@@ -45,10 +52,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void toMapActivity(){
-
         Intent intent = new Intent(LoginActivity.this, MapActivity.class);
         startActivity(intent);
+    }
 
+    public void toRegisterActivity(){
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(intent);
     }
 
 }
