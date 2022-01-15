@@ -32,6 +32,7 @@
         app:startIconDrawable="@drawable/lock_ic">
 
         <EditText
+            android:id="@+id/etPassword"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
