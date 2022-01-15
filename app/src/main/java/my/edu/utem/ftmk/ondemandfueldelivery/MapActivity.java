@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +32,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -58,9 +61,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mLocationClient;
     private int GPS_REQUEST_CODE = 9001;
 
+    double userLatitude, userLongitude;
+    String typeOfFuel;
+    Double prices = 10.00, fuelLitre;
+
+
+
     TextView txtPrice, txtRon95, txtRon97, txtDiesel;
     SeekBar sliderPrice;
     CardView cvRon95, cvRon97, cvDiesel;
+    Button btnRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +80,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         btnAutoLocate = findViewById(R.id.btnAutoLocate);
+        btnRequest = findViewById(R.id.btnRequest);
         sliderPrice = findViewById(R.id.sliderPrice);
         txtPrice = findViewById(R.id.txtPrice);
 
@@ -113,6 +124,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 int step = 5;
                 i = ((int) Math.round(i/step) )* step;
                 seekBar.setProgress(i);
+                prices = (double)i;
                 txtPrice.setText("RM" + String.valueOf(i) +".00");
             }
 
@@ -131,7 +143,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 cvRon95.setCardBackgroundColor(Color.rgb(255, 199, 0));
-                txtRon95.setTextColor(Color.WHITE);
                 cvRon97.setCardBackgroundColor(Color.WHITE);
                 cvDiesel.setCardBackgroundColor(Color.WHITE);
             }
@@ -155,6 +166,42 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+        btnRequest.setOnClickListener(new View.OnClickListener() {
+            Map<String, Object> user = new HashMap<>();
+
+            @Override
+            public void onClick(View view) {
+
+
+                FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                        user = documentSnapshot.getData();
+                        user.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        user.put("price", prices );
+                        user.put("Latitude", userLatitude);
+                        user.put("Longitude", userLongitude);
+
+
+                        FirebaseFirestore.getInstance().collection("waypoint").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(@NonNull DocumentReference documentReference) {
+
+                            }
+                        });
+                    }
+                });
+
+
+
+            }
+        });
+
+
+
+
+
+
         checkMyPermission();
         initMap();
         mLocationClient = new FusedLocationProviderClient(this);
@@ -163,27 +210,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 getCurrLoc();
-                // Create a new user with a first and last name
-                Map<String, Object> user = new HashMap<>();
-                user.put("first", "Ada");
-                user.put("last", "Lovelace");
-                user.put("born", 1815);
-
-                // Add a new document with a generated ID
-                db.collection("users")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                            }
-                        });
             }
         });
     }
@@ -205,6 +231,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             if (task.isSuccessful()) {
                 Location location = task.getResult();
+                userLatitude = location.getLatitude();
+                userLongitude = location.getLongitude();
                 gotoLocation(location.getLatitude(), location.getLongitude());
             }
 
@@ -279,6 +307,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // moves camera to coordinates
         mGoogleMap.moveCamera(point);
 
+        FirebaseFirestore.getInstance().collection("waypoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                mGoogleMap.clear();
+               if(!value.isEmpty()) {
+
+
+                   for (DocumentSnapshot ds : value) {
+                        Map<String,Object> mGoogleData = ds.getData();
+                        LatLng latLng = new LatLng((Double)mGoogleData.get("Latitude"), (Double)mGoogleData.get("Longitude"));
+
+                        mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(mGoogleData.get("FullName").toString()));
+                   }
+               }
+            }
+        });
     }
 
     @Override

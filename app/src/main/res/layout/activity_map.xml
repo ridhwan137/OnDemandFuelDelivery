@@ -247,6 +247,7 @@
             />
 
         <Button
+            android:id="@+id/btnRequest"
             android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
