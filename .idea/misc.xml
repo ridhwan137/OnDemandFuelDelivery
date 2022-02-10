@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable-v24/layoutcorner2.xml" value="0.29957264957264956" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable-v24/radio_normal.xml" value="0.29957264957264956" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable-v24/radio_selected.xml" value="0.29957264957264956" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable-v24/radio_selector.xml" value="0.29957264957264956" />
@@ -10,11 +11,13 @@
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable-v24/textcolour.xml" value="0.29957264957264956" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable/fuelpump_background.xml" value="0.29957264957264956" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable/layoutcorner.xml" value="0.3651041666666667" />
+        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable/markerequestfuel_background.xml" value="0.17136752136752137" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/drawable/radiobuttonstyle.xml" value="0.29957264957264956" />
-        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_main.xml" value="0.2863247863247863" />
-        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_map.xml" value="0.33" />
+        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_map.xml" value="0.22" />
         <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Users/USER/OnDemandFuelDelivery/app/src/main/res/layout/users_details_marker.xml" value="0.33" />
       </map>
     </option>
   </component>

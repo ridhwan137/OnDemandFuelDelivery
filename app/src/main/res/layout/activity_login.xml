@@ -7,11 +7,19 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:layout_width="230dp"
+        android:layout_height="140dp"
+        android:background="@drawable/bakmai_logo"
+        android:layout_marginTop="200dp"
+        android:layout_gravity="center"
+        />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center"
         app:startIconDrawable="@drawable/person_ic">
 
@@ -46,7 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="Login"/>
+        android:backgroundTint="#FFC700"
+        android:text="Login"
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/tvRegister"

@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("FullName", etFullName.getText().toString());
         user.put("PhoneNum", etPhoneNum.getText().toString());
         user.put("Address", etAddress.getText().toString());
+        user.put("userType", "client");
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
