@@ -102,6 +102,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnAutoLocate = findViewById(R.id.btnAutoLocate);
         btnRequest = findViewById(R.id.btnRequest);
         btnRequestMenu = findViewById(R.id.btnRequestMenu);
+
         sliderPrice = findViewById(R.id.sliderPrice);
         txtPrice = findViewById(R.id.txtPrice);
 
@@ -493,6 +494,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.makeText(this, "GPS is not enable", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void toUserProfile(View v){
+
+        Intent intent = new Intent(MapActivity.this, UserProfile.class);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        moveTaskToBack(true);
     }
 
 }

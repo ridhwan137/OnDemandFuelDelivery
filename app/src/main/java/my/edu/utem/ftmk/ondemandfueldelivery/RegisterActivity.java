@@ -75,40 +75,56 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("Address", etAddress.getText().toString());
         user.put("userType", "client");
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                task.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(@NonNull AuthResult authResult) {
-                        // Register User add to Firebase
-                        firebaseFirestore.collection("users")
-                                .document(authResult.getUser().getUid())
-                                .set(user)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(@NonNull Void unused) {
-                                        Toast.makeText(RegisterActivity.this, "Sign Up Succesfully", Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                    }
-                                });
+        if(!etEmail.getText().toString().equals("") && !etFullName.getText().toString().equals("") && !etPhoneNum.getText().toString().equals("")
+        && !etPassword.getText().toString().equals("") && !etAddress.getText().toString().equals("")) {
+
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    task.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(@NonNull AuthResult authResult) {
+                            // Register User add to Firebase
+                            firebaseFirestore.collection("users")
+                                    .document(authResult.getUser().getUid())
+                                    .set(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(@NonNull Void unused) {
+                                            Toast.makeText(RegisterActivity.this, "Sign Up Succesfully", Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
 
 
+                        }
+                    });
+                    task.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            Toast.makeText(RegisterActivity.this, "Sign Up Failed", Toast.LENGTH_LONG).show();
+        }
 
+    }
 
-                    }
-                });
-                task.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+    public void toLogin(View v){
 
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
 
+    }
 
+    @Override
+    public void onBackPressed()
+    {
+        moveTaskToBack(true);
     }
 }
