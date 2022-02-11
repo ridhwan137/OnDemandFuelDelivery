@@ -237,15 +237,14 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="320dp"
-                android:layout_height="wrap_content"
+                android:layout_height="320dp"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRecord"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/roundcorner_layout"
+                    android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

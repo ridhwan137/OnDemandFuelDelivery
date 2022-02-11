@@ -5,7 +5,7 @@ import java.util.Date;
 public class Record {
 
     private Date date;
-    private String fuelType, fuelPrice;
+    private String Latitude, Longitude, addresslatlng, typeoffuel, price;
 
     public Date getDate() {
         return date;
@@ -15,19 +15,43 @@ public class Record {
         this.date = date;
     }
 
-    public String getFuelType() {
-        return fuelType;
+    public String getLatitude() {
+        return Latitude;
     }
 
-    public void setFuelType(String fuelType) {
-        this.fuelType = fuelType;
+    public void setLatitude(String latitude) {
+        Latitude = latitude;
     }
 
-    public String getFuelPrice() {
-        return fuelPrice;
+    public String getLongitude() {
+        return Longitude;
     }
 
-    public void setFuelPrice(String fuelPrice) {
-        this.fuelPrice = fuelPrice;
+    public void setLongitude(String longitude) {
+        Longitude = longitude;
+    }
+
+    public String getAddresslatlng() {
+        return addresslatlng;
+    }
+
+    public void setAddresslatlng(String addresslatlng) {
+        this.addresslatlng = addresslatlng;
+    }
+
+    public String getTypeoffuel() {
+        return typeoffuel;
+    }
+
+    public void setTypeoffuel(String typeoffuel) {
+        this.typeoffuel = typeoffuel;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

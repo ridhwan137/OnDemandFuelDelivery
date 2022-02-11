@@ -129,14 +129,13 @@ public class UserProfile extends AppCompatActivity {
                             }
 
                             // after adding the data to recycler view.
-                            // we are calling recycler view notifuDataSetChanged
+                            // we are calling recycler view notifyDataSetChanged
                             // method to notify that data has been changed in recycler view.
                             recordRVAdapter.notifyDataSetChanged();
                         } else {
                             // if the snapshot is empty we are displaying a toast message.
                             loadingPB.setVisibility(View.GONE);
                             //tvEmptyDb.setVisibility(View.VISIBLE);
-                            //Toast.makeText(DownlineListActivity.this, "You have no downline yet.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
