@@ -19,6 +19,7 @@
            android:id="@+id/mvBackBtn"
            android:layout_width="40dp"
            android:layout_height="match_parent"
+           android:onClick="toLogin"
            app:materialIcon="chevron_left"
            app:materialIconColor="@color/black"
            />

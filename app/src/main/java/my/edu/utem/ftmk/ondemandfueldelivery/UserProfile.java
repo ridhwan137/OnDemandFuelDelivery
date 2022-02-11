@@ -270,12 +270,24 @@ public class UserProfile extends AppCompatActivity {
 //        }
     }
 
+    public void toMap(View v){
+
+        Intent intent = new Intent(UserProfile.this, MapActivity.class);
+        startActivity(intent);
+    }
+
     public void logoutUser(){
 
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(UserProfile.this, LoginActivity.class);
         startActivity(intent);
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        moveTaskToBack(true);
     }
 
 }

@@ -111,4 +111,17 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
+
+    public void toLogin(View v){
+
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        moveTaskToBack(true);
+    }
 }
