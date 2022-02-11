@@ -33,7 +33,7 @@
                     android:id="@+id/mvLogout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="340dp"
+                    android:layout_marginLeft="310dp"
                     app:materialIcon="logout" />
 
             </LinearLayout>

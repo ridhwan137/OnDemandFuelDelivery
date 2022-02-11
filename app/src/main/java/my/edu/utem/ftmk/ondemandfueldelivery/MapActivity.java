@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -60,6 +61,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -78,11 +80,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Double prices = 10.00, fuelLitre;
     Map<Marker, Map<String, Object>> markerData = new HashMap<>();
 
+    String userType;
+    String waypointID;
+
 
     TextView txtPrice, txtRon95, txtRon97, txtDiesel, txtUsername, txtAddressUser, txtTypeFuelUser, txtPriceFuelUser;
     SeekBar sliderPrice;
     CardView cvRon95, cvRon97, cvDiesel;
-    Button btnRequest, btnRequestMenu;
+    Button btnRequest, btnRequestMenu, btnAcceptUserRequest;
     LinearLayout layoutRequestFuel, layoutFake, layoutRequestFuelUserDetail;
     List<Address> addresslatlng;
     Geocoder geocoder;
@@ -96,12 +101,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
+        Date date = new Date();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         geocoder = new Geocoder(this, Locale.getDefault());
 
         btnAutoLocate = findViewById(R.id.btnAutoLocate);
         btnRequest = findViewById(R.id.btnRequest);
         btnRequestMenu = findViewById(R.id.btnRequestMenu);
+        btnAcceptUserRequest = findViewById(R.id.btnAcceptUserRequest);
 
         sliderPrice = findViewById(R.id.sliderPrice);
         txtPrice = findViewById(R.id.txtPrice);
@@ -124,165 +133,238 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         layoutRequestFuelUserDetail = findViewById(R.id.layoutRequestFuelUserDetail);
         layoutFake = findViewById(R.id.layoutFake);
 
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("fuel").addSnapshotListener(new EventListener<QuerySnapshot>() {
+       // fxCheckUserType();
+        //Log.e("test login user type", userType);
+       // if (userType.equals("client"))
+        //{
+
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (!value.isEmpty()) {
-                    for (DocumentSnapshot documentSnapshot : value) {
-                        if (documentSnapshot.getString("name").equals("ron95")) {
-                            txtRon95.setText("RM" + documentSnapshot.getString("price") + "/L");
-                        } else if (documentSnapshot.getString("name").equals("ron97")) {
-                            txtRon97.setText("RM" + documentSnapshot.getString("price") + "/L");
-                        } else if (documentSnapshot.getString("name").equals("diesel")) {
-                            txtDiesel.setText("RM" + documentSnapshot.getString("price") + "/L");
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+                        //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        userType = document.getData().get("userType").toString();
+                        Log.e("kapiaq user", userType);
+                        if (userType.equals("client"))
+                        {
+
+                            btnAcceptUserRequest.setVisibility(View.INVISIBLE);
+
+                            btnRequestMenu.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    layoutFake.setVisibility(View.VISIBLE);
+                                    layoutRequestFuel.setVisibility(View.VISIBLE);
+                                }
+                            });
+
+                            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                            firebaseFirestore.collection("fuel").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if (!value.isEmpty()) {
+                                        for (DocumentSnapshot documentSnapshot : value) {
+                                            if (documentSnapshot.getString("name").equals("ron95")) {
+                                                txtRon95.setText("RM" + documentSnapshot.getString("price") + "/L");
+                                            } else if (documentSnapshot.getString("name").equals("ron97")) {
+                                                txtRon97.setText("RM" + documentSnapshot.getString("price") + "/L");
+                                            } else if (documentSnapshot.getString("name").equals("diesel")) {
+                                                txtDiesel.setText("RM" + documentSnapshot.getString("price") + "/L");
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+
+                            sliderPrice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                                    int step = 5;
+                                    i = ((int) Math.round(i / step)) * step;
+                                    seekBar.setProgress(i);
+                                    prices = (double) i;
+                                    txtPrice.setText("RM" + String.valueOf(i) + ".00");
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                }
+                            });
+
+                            cvRon95.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    cvRon95.setCardBackgroundColor(Color.rgb(255, 199, 0));
+                                    cvRon97.setCardBackgroundColor(Color.WHITE);
+                                    cvDiesel.setCardBackgroundColor(Color.WHITE);
+                                    typeOfFuel = "RON95";
+                                }
+                            });
+
+                            cvRon97.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    cvRon97.setCardBackgroundColor(Color.rgb(255, 199, 0));
+                                    cvRon95.setCardBackgroundColor(Color.WHITE);
+                                    cvDiesel.setCardBackgroundColor(Color.WHITE);
+                                    typeOfFuel = "RON97";
+                                }
+                            });
+
+                            cvDiesel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    cvDiesel.setCardBackgroundColor(Color.rgb(255, 199, 0));
+                                    cvRon95.setCardBackgroundColor(Color.WHITE);
+                                    cvRon97.setCardBackgroundColor(Color.WHITE);
+                                    typeOfFuel = "DIESEL";
+                                }
+                            });
+
+                            btnRequest.setOnClickListener(new View.OnClickListener() {
+
+
+                                @Override
+                                public void onClick(View view) {
+
+
+                                    FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                            //user = documentSnapshot.getData();
+
+                                            try {
+                                                addresslatlng = geocoder.getFromLocation(userLatitude, userLongitude, 1);
+                                            } catch (IOException exception) {
+                                                exception.printStackTrace();
+                                            }
+
+                                            String addresswaypoint = addresslatlng.get(0).getAddressLine(0);
+
+                                            user.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            user.put("price", String.format("%.2f", prices));
+                                            user.put("Latitude", userLatitude);
+                                            user.put("Longitude", userLongitude);
+                                            user.put("typeoffuel", typeOfFuel);
+                                            user.put("addresslatlng", addresswaypoint);
+                                            user.put("status", "pending");
+                                            user.put("date", date);
+
+                                            //checkUserfx();
+                                            FirebaseFirestore.getInstance().collection("waypoint")
+                                                    .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .get()
+                                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+                                                            if (queryDocumentSnapshots.isEmpty()) {
+                                                                FirebaseFirestore.getInstance().collection("waypoint").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                    @Override
+                                                                    public void onSuccess(@NonNull DocumentReference documentReference) {
+                                                                        Log.e("Noh Test", user.toString());
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                Toast.makeText(MapActivity.this, "Pending!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+
+                                        }
+                                    });
+
+                                }
+
+                            });
+
+                            layoutFake.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    layoutFake.setVisibility(View.INVISIBLE);
+                                    layoutRequestFuel.setVisibility(View.INVISIBLE);
+                                    layoutRequestFuelUserDetail.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+                            layoutRequestFuel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            });
+
+
+                            checkMyPermission();
+                            initMap();
+                            mLocationClient = new FusedLocationProviderClient(MapActivity.this);
+
+                            btnAutoLocate.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    getCurrLoc();
+                                }
+                            });
+
+
+
+
                         }
+                        else
+                        {
+                            btnRequestMenu.setVisibility(View.INVISIBLE);
+
+
+
+                            layoutFake.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    layoutFake.setVisibility(View.INVISIBLE);
+                                    layoutRequestFuel.setVisibility(View.INVISIBLE);
+                                    layoutRequestFuelUserDetail.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+                            layoutRequestFuel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            });
+
+
+                            checkMyPermission();
+                            initMap();
+                            mLocationClient = new FusedLocationProviderClient(MapActivity.this);
+
+                            btnAutoLocate.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    getCurrLoc();
+                                }
+                            });
+
+                        }
+
+                    } else {
+                        //Log.d(TAG, "Error");
                     }
+                } else {
+                    //Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
 
-
-        sliderPrice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int step = 5;
-                i = ((int) Math.round(i / step)) * step;
-                seekBar.setProgress(i);
-                prices = (double) i;
-                txtPrice.setText("RM" + String.valueOf(i) + ".00");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        cvRon95.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cvRon95.setCardBackgroundColor(Color.rgb(255, 199, 0));
-                cvRon97.setCardBackgroundColor(Color.WHITE);
-                cvDiesel.setCardBackgroundColor(Color.WHITE);
-                typeOfFuel = "RON95";
-            }
-        });
-
-        cvRon97.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cvRon97.setCardBackgroundColor(Color.rgb(255, 199, 0));
-                cvRon95.setCardBackgroundColor(Color.WHITE);
-                cvDiesel.setCardBackgroundColor(Color.WHITE);
-                typeOfFuel = "RON97";
-            }
-        });
-
-        cvDiesel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cvDiesel.setCardBackgroundColor(Color.rgb(255, 199, 0));
-                cvRon95.setCardBackgroundColor(Color.WHITE);
-                cvRon97.setCardBackgroundColor(Color.WHITE);
-                typeOfFuel = "DIESEL";
-            }
-        });
-
-        btnRequest.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-
-
-                FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                        //user = documentSnapshot.getData();
-
-                        try {
-                            addresslatlng = geocoder.getFromLocation(userLatitude, userLongitude, 1);
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-
-                        String addresswaypoint = addresslatlng.get(0).getAddressLine(0);
-
-                        user.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        user.put("price", String.format("%.2f", prices));
-                        user.put("Latitude", userLatitude);
-                        user.put("Longitude", userLongitude);
-                        user.put("typeoffuel", typeOfFuel);
-                        user.put("addresslatlng", addresswaypoint);
-
-                        //checkUserfx();
-                        FirebaseFirestore.getInstance().collection("waypoint")
-                                .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
-                                        if (queryDocumentSnapshots.isEmpty()) {
-                                            FirebaseFirestore.getInstance().collection("waypoint").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                @Override
-                                                public void onSuccess(@NonNull DocumentReference documentReference) {
-                                                    Log.e("Noh Test", user.toString());
-                                                }
-                                            });
-                                        } else {
-                                            Toast.makeText(MapActivity.this, "Pending!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-                    }
-                });
-
-            }
-
-        });
-
-        btnRequestMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutFake.setVisibility(View.VISIBLE);
-                layoutRequestFuel.setVisibility(View.VISIBLE);
-            }
-        });
-
-        layoutFake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutFake.setVisibility(View.INVISIBLE);
-                layoutRequestFuel.setVisibility(View.INVISIBLE);
-                layoutRequestFuelUserDetail.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        layoutRequestFuel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-
-        checkMyPermission();
-        initMap();
-        mLocationClient = new FusedLocationProviderClient(this);
-
-        btnAutoLocate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getCurrLoc();
-            }
-        });
     }
 
     private void initMap() {
@@ -374,8 +456,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
         // set default map location
-        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(new LatLng(4.210484, 101.975769), 7);
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(new LatLng(userLatitude, userLongitude), 7);
 
+        getCurrLoc();
         // moves camera to coordinates
         mGoogleMap.moveCamera(point);
 
@@ -383,53 +466,143 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 mGoogleMap.clear();
-                if (!value.isEmpty()) {
+
+                if (userType.equals("worker"))
+                {
+                    if (!value.isEmpty()) {
+
+
+                        for (DocumentSnapshot ds : value) {
+                            Map<String, Object> mGoogleData = ds.getData();
+                            LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
+
+
+                            Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                            Log.e("nak userid", mGoogleData.toString());
+                            FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+                                @Override
+                                //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
+                                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                    Map <String,Object> userData = new HashMap<>();
+                                    userData = documentSnapshot.getData();
+
+                                    userData.put("price", ds.get("price"));
+                                    userData.put("typeoffuel", ds.get("typeoffuel"));
+                                    userData.put("addresslatlng", ds.get("addresslatlng"));
+                                    userData.put("waypointid", ds.getId());
+
+                                    markerData.put(marker, userData);
+
+                                    Log.e("nak tau marker data", markerData.toString());
+
+                                    btnAcceptUserRequest.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            DocumentReference docRef = FirebaseFirestore.getInstance().collection("waypoint").document(waypointID);
+
+                                            docRef
+                                                    .update("status", "complete")
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            //Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                           // Log.w(TAG, "Error updating document", e);
+                                                        }
+                                                    });
+
+                                            markerData.remove(marker);
+                                        }
+                                    });
+                                }
+
+
+                            });
+
+
+                        }
+
+                        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(@NonNull Marker marker) {
+                                layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
+                                layoutFake.setVisibility(View.VISIBLE);
+                                txtUsername.setText(markerData.get(marker).get("FullName").toString());
+                                txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
+                                txtPriceFuelUser.setText("RM" +markerData.get(marker).get("price").toString());
+                                txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
+                                waypointID = markerData.get(marker).get("waypointid").toString();
+
+                                Log.e("Test Apa Ada", markerData.get(marker).toString());
+                                //Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
+                                return false;
+                            }
+                        });
+                    }
+                }
+                else {
 
 
                     for (DocumentSnapshot ds : value) {
-                        Map<String, Object> mGoogleData = ds.getData();
-                        LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
+                        Log.e("suerid", ds.get("userid").toString());
+                        if (ds.get("userid").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                        {
+                            Log.e("useridsorang", ds.get("userid").toString());
+                            Map<String, Object> mGoogleData = ds.getData();
+                            Log.e("Masuk tak marker 2", ".");
+                            LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
 
 
-                        Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(mGoogleData.get("userid").toString()).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
-                        Log.e("nak userid", mGoogleData.toString());
-                        FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                            Log.e("nak userid", mGoogleData.toString());
+                            FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 
+                                @Override
+                                //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
+                                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                    Map <String,Object> userData = new HashMap<>();
+                                    userData = documentSnapshot.getData();
+
+                                    userData.put("price", ds.get("price"));
+                                    userData.put("typeoffuel", ds.get("typeoffuel"));
+                                    userData.put("addresslatlng", ds.get("addresslatlng"));
+                                    markerData.put(marker, userData);
+                                    Log.e("nak tau marker data", markerData.toString());
+
+                                }
+
+
+                            });
+                        }
+
+                        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
-                            //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
-                            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                                Map <String,Object> userData = new HashMap<>();
-                                userData = documentSnapshot.getData();
+                            public boolean onMarkerClick(@NonNull Marker marker) {
+                                layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
+                                layoutFake.setVisibility(View.VISIBLE);
+                                txtUsername.setText(markerData.get(marker).get("FullName").toString());
+                                txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
+                                txtPriceFuelUser.setText("RM" +markerData.get(marker).get("price").toString());
+                                txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
 
-                                userData.put("price", ds.get("price"));
-                                userData.put("typeoffuel", ds.get("typeoffuel"));
-                                userData.put("addresslatlng", ds.get("addresslatlng"));
-                                markerData.put(marker, userData);
-                                Log.e("nak tau marker data", markerData.toString());
+
+                                Log.e("Test Apa Ada", markerData.get(marker).toString());
+                                //Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
+                                return false;
                             }
-
-
                         });
-
-
                     }
 
-                    mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(@NonNull Marker marker) {
-                            layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
-                            layoutFake.setVisibility(View.VISIBLE);
-                            txtUsername.setText(markerData.get(marker).get("FullName").toString());
-                            txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
-                            txtPriceFuelUser.setText("RM" +markerData.get(marker).get("price").toString());
-                            txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
 
 
-                            Log.e("Test Apa Ada", markerData.get(marker).toString());
-                            Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
+
+
                 }
             }
         });
@@ -509,4 +682,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         moveTaskToBack(true);
     }
 
+    public void fxCheckUserType()
+    {
+
+    }
 }

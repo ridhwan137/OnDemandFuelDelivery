@@ -132,6 +132,7 @@
         </LinearLayout>
 
 <Button
+    android:id="@+id/btnAcceptUserRequest"
     android:layout_width="85dp"
     android:layout_height="33dp"
     android:layout_gravity="center"

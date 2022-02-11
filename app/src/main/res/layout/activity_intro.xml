@@ -11,7 +11,7 @@
         android:id="@+id/splashImg"
         android:layout_width="230dp"
         android:layout_height="140dp"
-        android:background="@drawable/bakmai_logo"
+        android:background="@drawable/ic_bakmai"
         android:layout_marginTop="200dp"
         android:layout_gravity="center"
         />

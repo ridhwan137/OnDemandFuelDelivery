@@ -33,7 +33,7 @@
         android:layout_width="130dp"
         android:layout_height="48dp"
         android:background="@drawable/round_shape"
-        android:text="BUY"
+        android:text="REQUEST"
         android:textColor="@color/black"
         app:backgroundTint="#FFC700"
         app:layout_constraintBottom_toBottomOf="parent"
