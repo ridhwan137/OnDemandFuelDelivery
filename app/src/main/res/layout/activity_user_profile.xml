@@ -91,7 +91,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="265dp"
                             android:textSize="15sp"
-                            android:text="Edit" />
+                            android:text="Edit"
+                            android:textColor="@color/black"
+                            />
 
                         <net.steamcrafted.materialiconlib.MaterialIconView
                             android:id="@+id/mvChevRight"
@@ -288,17 +290,18 @@
                 android:layout_gravity="center"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="320dp"
+                android:layout_width="360dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/roundcorner_layout"
                 android:layout_gravity="center">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRecord"
+                    android:padding="15dp"
                     android:layout_margin="10dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="320dp"
                     android:layout_height="match_parent"
+                    android:background="@drawable/roundcorner_layout"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

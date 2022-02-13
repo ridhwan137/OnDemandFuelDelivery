@@ -103,7 +103,9 @@ public class UserProfile extends AppCompatActivity {
         // below line is use to get the data from Firebase Firestore.
         // previously we were saving data on a reference of Courses
         // now we will be getting the data from the same reference.
-        db.collection("waypoint").whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
+        db.collection("waypoint").whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("status", "complete")
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -120,6 +122,7 @@ public class UserProfile extends AppCompatActivity {
                                 // after getting this list we are passing
                                 // that list to our object class.
                                 Record c = d.toObject(Record.class);
+
 
                                 // and we will pass this object class
                                 // inside our arraylist which we have
