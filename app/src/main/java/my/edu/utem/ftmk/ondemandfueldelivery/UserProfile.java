@@ -46,7 +46,7 @@ public class UserProfile extends AppCompatActivity {
     ProgressBar loadingPB;
 
     private LinearLayout editProfileLayout;
-    private TextView tvName, tvPhone, tvAddress, tvEdit;
+    private TextView tvName, tvPhone, tvAddress, tvEdit, txtEmailUser;
     private EditText etName, etPhone, etAddress;
     private MaterialIconView mvConfirm, mvCancel, mvLogout;
 
@@ -68,6 +68,7 @@ public class UserProfile extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         tvAddress = findViewById(R.id.tvAddress);
         tvEdit = findViewById(R.id.tvEdit);
+        txtEmailUser =findViewById(R.id.txtEmailUser);
 
         etName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
@@ -190,6 +191,7 @@ public class UserProfile extends AppCompatActivity {
 
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        txtEmailUser.setText(document.getData().get("Email").toString());
                         tvName.setText(document.getData().get("FullName").toString());
                         tvPhone.setText(document.getData().get("PhoneNum").toString());
                         tvAddress.setText(document.getData().get("Address").toString());

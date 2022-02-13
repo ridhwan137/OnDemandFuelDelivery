@@ -37,7 +37,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
         // setting data to our text views from our modal class.
         Record record = recordArrayList.get(position);
         holder.tvRecordFuelType.setText(record.getTypeoffuel());
-        holder.tvRecordFuelPrice.setText(record.getPrice());
+        holder.tvRecordFuelPrice.setText("RM" +record.getPrice());
         holder.tvRecordDate.setText(record.getDate().toString());
 
     }

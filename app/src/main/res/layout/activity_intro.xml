@@ -9,11 +9,12 @@
 
     <ImageView
         android:id="@+id/splashImg"
-        android:layout_width="230dp"
-        android:layout_height="140dp"
-        android:background="@drawable/ic_bakmai"
-        android:layout_marginTop="200dp"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="@drawable/ic_bakmai_screen_intro"
+        android:layout_marginTop="250dp"
         android:layout_gravity="center"
         />
+
 
 </LinearLayout>

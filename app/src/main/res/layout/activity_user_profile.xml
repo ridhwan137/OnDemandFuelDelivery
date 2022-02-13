@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".UserProfile">
 
@@ -23,7 +23,7 @@
 
                 <net.steamcrafted.materialiconlib.MaterialIconView
                     android:id="@+id/mvReturn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="35dp"
                     android:layout_height="match_parent"
                     android:onClick="toMap"
                     android:layout_marginLeft="10dp"
@@ -31,12 +31,35 @@
 
                 <net.steamcrafted.materialiconlib.MaterialIconView
                     android:id="@+id/mvLogout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="28dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="310dp"
+                    android:layout_marginLeft="305dp"
                     app:materialIcon="logout" />
 
             </LinearLayout>
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/mi_profileuser"
+                app:materialIcon="face_profile"
+                android:layout_marginTop="30dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+
+                android:layout_gravity="center"
+
+                />
+
+            <TextView
+                android:id="@+id/txtEmailUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama hang"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center"
+                />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -45,7 +68,7 @@
 
                 <LinearLayout
                     android:layout_width="320dp"
-                    android:layout_height="320dp"
+                    android:layout_height="270dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/roundcorner_layout"
@@ -53,7 +76,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -66,6 +90,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="265dp"
+                            android:textSize="15sp"
                             android:text="Edit" />
 
                         <net.steamcrafted.materialiconlib.MaterialIconView
@@ -80,53 +105,62 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="Name" />
+                        android:text="Name"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/tvName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="" />
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/white"
+                        android:text="sssss" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="Phone" />
+                        android:text="Phone"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/tvPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="" />
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/white"
+                        android:text="sssss" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="Address" />
+                        android:layout_marginBottom="10dp"
+                        android:text="Address"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/tvAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
-                        android:text="" />
+                        android:textColor="@color/white"
+                        android:text="ssss" />
 
                 </LinearLayout>
 
@@ -134,7 +168,7 @@
                 <LinearLayout
                     android:id="@+id/editProfileLayout"
                     android:layout_width="320dp"
-                    android:layout_height="320dp"
+                    android:layout_height="260dp"
                     android:layout_gravity="center"
                     android:background="@drawable/roundcorner_layout"
                     android:orientation="vertical"
@@ -154,34 +188,39 @@
                             android:id="@+id/mvCancel"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="265dp"
+                            android:layout_marginLeft="250dp"
+                            android:layout_marginRight="3dp"
                             app:materialIcon="close"
-                            app:materialIconColor="#F44336"/>
+                            app:materialIconColor="@color/black"/>
 
                         <net.steamcrafted.materialiconlib.MaterialIconView
                             android:id="@+id/mvConfirm"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             app:materialIcon="check"
-                            app:materialIconColor="#4CAF50"/>
+                            app:materialIconColor="@color/black"/>
 
 
                     </LinearLayout>
 
 
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
+                        android:textColor="@color/black"
                         android:text="Name" />
 
                     <EditText
                         android:id="@+id/etName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="280dp"
+                        android:layout_gravity="center"
+                        android:layout_height="25dp"
+                        android:paddingLeft="5dp"
+                        android:background="@drawable/roundcorner_layout3"
+                        android:textColor="@color/white"
                         android:layout_marginTop="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
@@ -192,15 +231,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
+                        android:textColor="@color/black"
                         android:text="Phone" />
 
                     <EditText
                         android:id="@+id/etPhone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="280dp"
+                        android:layout_gravity="center"
+                        android:layout_height="25dp"
+                        android:paddingLeft="5dp"
+                        android:background="@drawable/roundcorner_layout3"
                         android:layout_marginTop="5dp"
+                        android:textColor="@color/white"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:text=""
@@ -210,18 +254,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="10dp"
+                        android:textColor="@color/black"
                         android:text="Address" />
 
                     <EditText
                         android:id="@+id/etAddress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="280dp"
+                        android:layout_gravity="center"
+                        android:layout_height="50dp"
+                        android:background="@drawable/roundcorner_layout3"
                         android:layout_marginTop="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:text=""
+                        android:textColor="@color/white"
+                        android:paddingLeft="5dp"
                         android:textSize="14dp"/>
 
                 </LinearLayout>
@@ -231,18 +280,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="25dp"
                 android:text="Record"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:layout_gravity="center"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="320dp"
-                android:layout_height="320dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/roundcorner_layout"
                 android:layout_gravity="center">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRecord"
+                    android:layout_margin="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"

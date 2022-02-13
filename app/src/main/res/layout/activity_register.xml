@@ -28,16 +28,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SIGN UP"
-
-        android:layout_marginLeft="95dp"
+        android:layout_marginLeft="110dp"
         android:padding="20dp"
         />
    </LinearLayout>
+
+    <ImageView
+        android:layout_width="190dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_bakmai"
+        />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_gravity="center"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="#FFC700"
+
         >
 
         <EditText
@@ -45,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+
             android:hint="Email"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -55,6 +67,8 @@
         android:layout_marginTop="10dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_gravity="center"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="#FFC700"
         >
 
         <EditText
@@ -72,6 +86,8 @@
         android:layout_marginTop="10dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_gravity="center"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="#FFC700"
         >
 
         <EditText
@@ -87,6 +103,8 @@
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="#FFC700"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_gravity="center"
         >
@@ -102,6 +120,8 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="#FFC700"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_gravity="center"
             >
@@ -125,6 +145,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="Sign Up"/>
+        android:backgroundTint="#FFC700"
+        android:text="Sign Up"
+        android:textColor="@color/black"/>
 
 </LinearLayout>

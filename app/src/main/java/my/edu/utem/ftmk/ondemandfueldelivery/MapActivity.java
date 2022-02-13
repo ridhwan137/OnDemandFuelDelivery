@@ -264,19 +264,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                             //checkUserfx();
                                             FirebaseFirestore.getInstance().collection("waypoint")
                                                     .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .whereEqualTo("status", "pending")
                                                     .get()
                                                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                         @Override
                                                         public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
-                                                            if (queryDocumentSnapshots.isEmpty()) {
+                                                            Log.e("kk", String.valueOf(queryDocumentSnapshots.size()));
+                                                            if (queryDocumentSnapshots.size() == 0 ) {
                                                                 FirebaseFirestore.getInstance().collection("waypoint").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                                     @Override
                                                                     public void onSuccess(@NonNull DocumentReference documentReference) {
+                                                                        Toast.makeText(MapActivity.this, "Request Submitted", Toast.LENGTH_SHORT).show();
                                                                         Log.e("Noh Test", user.toString());
+                                                                        layoutRequestFuel.setVisibility(View.INVISIBLE);
                                                                     }
                                                                 });
                                                             } else {
-                                                                Toast.makeText(MapActivity.this, "Pending!", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(MapActivity.this, "Nama hg dah ada!", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     });
@@ -463,69 +467,79 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mGoogleMap.moveCamera(point);
 
         FirebaseFirestore.getInstance().collection("waypoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 mGoogleMap.clear();
 
+
                 if (userType.equals("worker"))
                 {
+
                     if (!value.isEmpty()) {
 
-
                         for (DocumentSnapshot ds : value) {
-                            Map<String, Object> mGoogleData = ds.getData();
-                            LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
+                            if (ds.getString("status").equals("pending")) {
 
 
-                            Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
-                            Log.e("nak userid", mGoogleData.toString());
-                            FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-
-                                @Override
-                                //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
-                                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                                    Map <String,Object> userData = new HashMap<>();
-                                    userData = documentSnapshot.getData();
-
-                                    userData.put("price", ds.get("price"));
-                                    userData.put("typeoffuel", ds.get("typeoffuel"));
-                                    userData.put("addresslatlng", ds.get("addresslatlng"));
-                                    userData.put("waypointid", ds.getId());
-
-                                    markerData.put(marker, userData);
-
-                                    Log.e("nak tau marker data", markerData.toString());
-
-                                    btnAcceptUserRequest.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-
-                                            DocumentReference docRef = FirebaseFirestore.getInstance().collection("waypoint").document(waypointID);
-
-                                            docRef
-                                                    .update("status", "complete")
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            //Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                           // Log.w(TAG, "Error updating document", e);
-                                                        }
-                                                    });
-
-                                            markerData.remove(marker);
-                                        }
-                                    });
-                                }
+                                Map<String, Object> mGoogleData = ds.getData();
+                                LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
 
 
-                            });
+                                Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                                Log.e("nak userid", mGoogleData.toString());
+                                FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+                                    @Override
+                                    //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
+                                    public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                        Map<String, Object> userData = new HashMap<>();
+                                        userData = documentSnapshot.getData();
+
+                                        userData.put("price", ds.get("price"));
+                                        userData.put("typeoffuel", ds.get("typeoffuel"));
+                                        userData.put("addresslatlng", ds.get("addresslatlng"));
+                                        userData.put("waypointid", ds.getId());
+
+                                        markerData.put(marker, userData);
+
+                                        Log.e("nak tau marker data", markerData.toString());
+
+                                        btnAcceptUserRequest.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+
+                                                Toast.makeText(MapActivity.this, "Client Request Accepted", Toast.LENGTH_LONG).show();
+                                                layoutRequestFuelUserDetail.setVisibility(View.INVISIBLE);
+
+                                                DocumentReference docRef = FirebaseFirestore.getInstance().collection("waypoint").document(waypointID);
+
+                                                docRef
+                                                        .update("status", "complete")
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                //Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                                markerData.remove(marker);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                // Log.w(TAG, "Error updating document", e);
+                                                            }
+                                                        });
 
 
+                                            }
+                                        });
+                                    }
+
+
+                                });
+
+                            }
                         }
 
                         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -551,52 +565,53 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     for (DocumentSnapshot ds : value) {
                         Log.e("suerid", ds.get("userid").toString());
-                        if (ds.get("userid").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                        {
-                            Log.e("useridsorang", ds.get("userid").toString());
-                            Map<String, Object> mGoogleData = ds.getData();
-                            Log.e("Masuk tak marker 2", ".");
-                            LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
+                        if (ds.getString("status").equals("pending")) {
+                            if (ds.get("userid").toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                Log.e("useridsorang", ds.get("userid").toString());
+                                Map<String, Object> mGoogleData = ds.getData();
+                                Log.e("Masuk tak marker 2", ".");
+                                LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
 
 
-                            Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
-                            Log.e("nak userid", mGoogleData.toString());
-                            FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                                Log.e("nak userid", mGoogleData.toString());
+                                FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 
+                                    @Override
+                                    //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
+                                    public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                        Map<String, Object> userData = new HashMap<>();
+                                        userData = documentSnapshot.getData();
+
+                                        userData.put("price", ds.get("price"));
+                                        userData.put("typeoffuel", ds.get("typeoffuel"));
+                                        userData.put("addresslatlng", ds.get("addresslatlng"));
+                                        markerData.put(marker, userData);
+                                        Log.e("nak tau marker data", markerData.toString());
+
+                                    }
+
+
+                                });
+                            }
+
+                            mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                 @Override
-                                //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
-                                public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                                    Map <String,Object> userData = new HashMap<>();
-                                    userData = documentSnapshot.getData();
+                                public boolean onMarkerClick(@NonNull Marker marker) {
+                                    layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
+                                    layoutFake.setVisibility(View.VISIBLE);
+                                    txtUsername.setText(markerData.get(marker).get("FullName").toString());
+                                    txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
+                                    txtPriceFuelUser.setText("RM" + markerData.get(marker).get("price").toString());
+                                    txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
 
-                                    userData.put("price", ds.get("price"));
-                                    userData.put("typeoffuel", ds.get("typeoffuel"));
-                                    userData.put("addresslatlng", ds.get("addresslatlng"));
-                                    markerData.put(marker, userData);
-                                    Log.e("nak tau marker data", markerData.toString());
 
+                                    Log.e("Test Apa Ada", markerData.get(marker).toString());
+                                    //Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
+                                    return false;
                                 }
-
-
                             });
                         }
-
-                        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(@NonNull Marker marker) {
-                                layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
-                                layoutFake.setVisibility(View.VISIBLE);
-                                txtUsername.setText(markerData.get(marker).get("FullName").toString());
-                                txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
-                                txtPriceFuelUser.setText("RM" +markerData.get(marker).get("price").toString());
-                                txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
-
-
-                                Log.e("Test Apa Ada", markerData.get(marker).toString());
-                                //Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
-                                return false;
-                            }
-                        });
                     }
 
 
@@ -671,10 +686,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void toUserProfile(View v){
 
-        Intent intent = new Intent(MapActivity.this, UserProfile.class);
-        startActivity(intent);
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
 
+                    if (document.exists()) {
+                        userType = document.getData().get("userType").toString();
+                        Log.e("kapiaq user 2", userType);
+                        if (userType.equals("client")) {
+                            Intent intent = new Intent(MapActivity.this, UserProfile.class);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(MapActivity.this, WorkerProfileActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                    else
+                    {
+                        Log.e("tk dak pa", "tak dak");
+                    }
+
+                }
+            }
+        });
     }
+
 
     @Override
     public void onBackPressed()
