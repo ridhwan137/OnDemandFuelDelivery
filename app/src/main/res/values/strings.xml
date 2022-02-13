@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OnDemand Fuel Delivery</string>
+    <string name="title_activity_nak_test">NakTest</string>
 </resources>

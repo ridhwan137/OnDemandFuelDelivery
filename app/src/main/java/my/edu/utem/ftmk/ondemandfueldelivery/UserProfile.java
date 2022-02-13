@@ -1,10 +1,12 @@
 package my.edu.utem.ftmk.ondemandfueldelivery;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -178,7 +180,31 @@ public class UserProfile extends AppCompatActivity {
         mvLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(UserProfile.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Logout Confirmation");
+                dialog.setMessage("Are you sure you want to logout?" );
+                dialog.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Action for "Logout".
+                        logoutUser();
+                    }
+                })
+                        .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Action for "Cancel".
+
+                            }
+                        });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.black));
             }
         });
     }
