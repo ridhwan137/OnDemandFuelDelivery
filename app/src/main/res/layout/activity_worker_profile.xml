@@ -38,10 +38,23 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:padding="2dp"
+                android:text="Worker"
+                android:textStyle="bold"
+                android:background="@drawable/roundcorner_layout"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                />
             <net.steamcrafted.materialiconlib.MaterialIconView
                 android:id="@+id/mi_profileuser"
                 app:materialIcon="face_profile"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
 
@@ -91,6 +104,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="265dp"
                             android:textSize="15sp"
+                            android:textColor="@color/black"
                             android:text="Edit" />
 
                         <net.steamcrafted.materialiconlib.MaterialIconView
