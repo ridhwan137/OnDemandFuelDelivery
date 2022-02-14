@@ -280,7 +280,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                                     }
                                                                 });
                                                             } else {
-                                                                Toast.makeText(MapActivity.this, "Nama hg dah ada!", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(MapActivity.this, "Your Request Are Pending", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     });

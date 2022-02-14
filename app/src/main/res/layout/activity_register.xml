@@ -7,44 +7,42 @@
     android:orientation="vertical"
     tools:context=".RegisterActivity">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-
-       >
-
-       <net.steamcrafted.materialiconlib.MaterialIconView
-
-           android:id="@+id/mvBackBtn"
-           android:layout_width="40dp"
-           android:layout_height="match_parent"
-           android:onClick="toLogin"
-           app:materialIcon="chevron_left"
-           app:materialIconColor="@color/black"
-           />
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SIGN UP"
-        android:layout_marginLeft="110dp"
-        android:padding="20dp"
-        />
-   </LinearLayout>
+        android:orientation="horizontal"
+
+        >
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+
+            android:id="@+id/mvBackBtn"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:onClick="toLogin"
+            app:materialIcon="chevron_left"
+            app:materialIconColor="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="95dp"
+            android:padding="20dp"
+            android:text="SIGN UP" />
+    </LinearLayout>
 
     <ImageView
         android:layout_width="190dp"
         android:layout_height="120dp"
+        android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_bakmai"
-        />
+        android:background="@drawable/ic_bakmai" />
+
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         app:boxStrokeColor="#FFC700"
@@ -55,98 +53,94 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:hint="Email"
 
-            android:hint="Email"/>
+            android:padding="10dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:textColorHint="@color/black"
-        app:boxStrokeColor="#FFC700"
-        >
+        app:boxStrokeColor="#FFC700">
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:hint="Password"/>
+            android:hint="Password"
+            android:padding="10dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:textColorHint="@color/black"
-        app:boxStrokeColor="#FFC700"
-        >
+        app:boxStrokeColor="#FFC700">
 
         <EditText
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:hint="Full Name"/>
+            android:hint="Full Name"
+            android:padding="10dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="350dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:textColorHint="@color/black"
-        app:boxStrokeColor="#FFC700"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_gravity="center"
-        >
+        app:boxStrokeColor="#FFC700">
 
         <EditText
             android:id="@+id/etPhoneNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:hint="Phone Number"/>
+            android:hint="Phone Number"
+            android:padding="10dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="350dp"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="#FFC700">
+
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="#FFC700"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_gravity="center"
-            >
+            android:hint="Address"
+            android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:hint="Address"/>
-
-
-
-        </com.google.android.material.textfield.TextInputLayout>
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <Button
         android:id="@+id/btSignUp"
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:backgroundTint="#FFC700"
         android:text="Sign Up"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black" />
 
 </LinearLayout>
