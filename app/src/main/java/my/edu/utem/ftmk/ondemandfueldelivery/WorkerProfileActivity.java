@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +50,7 @@ public class WorkerProfileActivity extends AppCompatActivity {
 
     private LinearLayout editProfileLayout;
     private TextView tvName, tvPhone, tvAddress, tvEdit, txtEmailUser;
-    private EditText etName, etPhone, etAddress;
+    private EditText etName, etPhone, etAddress, etPassword, etConfirmPassword;
     private MaterialIconView mvConfirm, mvCancel, mvLogout;
 
     private double latitude, longitude;
@@ -75,6 +76,8 @@ public class WorkerProfileActivity extends AppCompatActivity {
         etName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
         etAddress = findViewById(R.id.etAddress);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
         editProfileLayout = findViewById(R.id.editProfileLayout);
 
@@ -233,6 +236,8 @@ public class WorkerProfileActivity extends AppCompatActivity {
                         etName.setText(document.getData().get("FullName").toString());
                         etPhone.setText(document.getData().get("PhoneNum").toString());
                         etAddress.setText(document.getData().get("Address").toString());
+                        etPassword.setText(document.getData().get("Password").toString());
+                        etConfirmPassword.setText(document.getData().get("Password").toString());
 
                     } else {
                         Log.d(TAG, "No such document");
@@ -249,39 +254,57 @@ public class WorkerProfileActivity extends AppCompatActivity {
         user.put("name",etName.getText().toString());
         user.put("phone",etPhone.getText().toString());
         user.put("address",etAddress.getText().toString());
+        user.put("password",etPassword.getText().toString());
+        user.put("confirmpassword",etConfirmPassword.getText().toString());
 
-//        if(etPassword.getText().toString().equals(etConfirmPassword.getText().toString())) {
-//
-//            user.put("password",etConfirmPassword.getText().toString());
+        if(etPassword.getText().toString().equals(etConfirmPassword.getText().toString())) {
+            DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            docRef
+                    .update("FullName", user.get("name"), "PhoneNum", user.get("phone"), "Address", user.get("address"),
+                            "Password", user.get("confirmpassword"))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document", e);
+                        }
+                    });
 
-        docRef
-                .update("FullName", user.get("name"),"PhoneNum",user.get("phone"), "Address", user.get("address"))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            updatePassword();
+            Toast.makeText(WorkerProfileActivity.this, "Your profile has been updated.", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(WorkerProfileActivity.this, WorkerProfileActivity.class);
+            startActivity(intent);
+
+            editProfileLayout.setVisibility(View.INVISIBLE);
+        }
+        else {
+            Toast.makeText(WorkerProfileActivity.this, "Password not match.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void updatePassword() {
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String newPassword = etConfirmPassword.getText().toString();
+        Log.e("Check password: ", newPassword);
+
+        user.updatePassword(newPassword)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document", e);
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User password updated.");
+                        }
                     }
                 });
-
-        Toast.makeText(WorkerProfileActivity.this, "Your profile has been updated.", Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(WorkerProfileActivity.this, WorkerProfileActivity.class);
-        startActivity(intent);
-
-        editProfileLayout.setVisibility(View.INVISIBLE);
-
-//        else {
-//            Toast.makeText(UserProfile.this, "Password is not match.", Toast.LENGTH_SHORT).show();
-//            showUserDataToBeUpdated();
-//        }
     }
 
     public void toMap(View v){
