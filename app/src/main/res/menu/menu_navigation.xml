@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mapNavigation"
+        android:title=""
+        android:icon="@drawable/ic_mapbakmainavigation_grey"/>
+
+    <item
+        android:id="@+id/deliveryNavigation"
+        android:title=""
+        android:icon="@drawable/ic_riderbakmainavigation"/>
+
+    <item
+        android:id="@+id/profileNavigation"
+        android:title=""
+        android:icon="@drawable/ic_profilebakmainavigationcirclebackgroundlatest"/>
+</menu>

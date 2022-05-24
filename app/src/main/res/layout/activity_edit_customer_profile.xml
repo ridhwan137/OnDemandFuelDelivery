@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context=".editCustomerProfile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="5pt"
+        android:orientation="horizontal">
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:id="@+id/mvCancel"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:materialIcon="close"
+            app:materialIconColor="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="Profile"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytCustomerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/roundcorner_layouteditprofile"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="5dp"
+        android:padding="20dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Name"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/mvEditName"
+                android:layout_width="23dp"
+                android:layout_height="match_parent"
+                app:materialIcon="pencil"
+                app:materialIconColor="#FFC700" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Azri Abdullah"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytCustomerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/roundcorner_layouteditprofile"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="5dp"
+        android:padding="20dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Address"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/mvEditAddress"
+                android:layout_width="23dp"
+                android:layout_height="match_parent"
+
+                app:materialIcon="pencil"
+                app:materialIconColor="#FFC700" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Taman Selasih 6, Kulim Kedah"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytCustomerPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/roundcorner_layouteditprofile"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="5dp"
+        android:padding="20dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Password"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/mvEditPassword"
+                android:layout_width="23dp"
+                android:layout_height="match_parent"
+                app:materialIcon="pencil"
+                app:materialIconColor="#FFC700" />
+
+        </LinearLayout>
+
+        <TextView
+
+            android:id="@+id/tvPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="**********"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytCustomerMobileNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/roundcorner_layouteditprofile"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="5dp"
+        android:padding="20dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Mobile Number"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/mvEditMobile"
+                android:layout_width="23dp"
+                android:layout_height="match_parent"
+
+                app:materialIcon="pencil"
+                app:materialIconColor="#FFC700" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="+60134149684"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            />
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="Verified"
+            android:textAlignment="center"
+            android:padding="3dp"
+            android:textSize="10sp"
+            android:background="@drawable/roundcorner_layout_verified"
+            android:textColor="#004D8A"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete my account"
+        android:textColor="#FFC700"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        />
+
+
+
+</LinearLayout>
