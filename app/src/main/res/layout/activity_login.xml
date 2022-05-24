@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
+        app:passwordToggleEnabled="true"
         android:layout_marginTop="5dp"
         app:boxStrokeColor="#FFC700"
         app:startIconDrawable="@drawable/lock_ic">

@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("FullName", etFullName.getText().toString());
         user.put("PhoneNum", etPhoneNum.getText().toString());
         user.put("Address", etAddress.getText().toString());
+        user.put("Picture URL", "-");
         user.put("userType", "client");
 
         if(!etEmail.getText().toString().equals("") && !etFullName.getText().toString().equals("") && !etPhoneNum.getText().toString().equals("")

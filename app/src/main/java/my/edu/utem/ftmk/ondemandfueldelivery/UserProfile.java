@@ -244,7 +244,8 @@ public class UserProfile extends AppCompatActivity {
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
+                if (task.isSuccessful())
+                {
                     DocumentSnapshot document = task.getResult();
 
                     if (document.exists()) {

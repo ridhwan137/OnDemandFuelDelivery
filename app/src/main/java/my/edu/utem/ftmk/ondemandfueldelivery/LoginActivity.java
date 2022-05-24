@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(!email.equals("") && !password.equals("")) {
 
+
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
