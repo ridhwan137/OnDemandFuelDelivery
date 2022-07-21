@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".workerProfile">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:gravity="center"
+            android:layout_marginTop="50dp"
+
+
+            android:background="@drawable/round_shape"
+            android:backgroundTint="#FFC700"
+            android:layout_gravity="center"
+
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Worker Account"
+
+                android:textColor="@color/black"
+                android:layout_gravity="center"
+
+
+                />
+        </LinearLayout>
+
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/circleprofilepicture" />
+
+        <TextView
+            android:id="@+id/txtEmailUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="55dp"
+            android:text="Azghi"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="30dp"
+
+            android:orientation="horizontal">
+
+            <LinearLayout
+
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_navigation"
+                android:backgroundTint="#FFC700"
+                android:gravity="center"
+
+
+                >
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_profilefillbakmainavigation" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:text="Profile"
+                android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/btnToEditProfile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/square_navigation"
+                android:backgroundTint="#DDDDDD"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+
+                >
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:id="@+id/mvProfile"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+                    app:materialIcon="chevron_right" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_navigation"
+                android:backgroundTint="#FFC700"
+                android:gravity="center"
+
+
+                >
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_recordbakmainavigation" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:text="Record"
+                android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <LinearLayout
+
+                android:onClick="toCustomerOrder"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/square_navigation"
+                android:backgroundTint="#DDDDDD"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+
+                >
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:id="@+id/mvRecord"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+                    app:materialIcon="chevron_right" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+
+            android:id="@+id/mvLogout"
+            android:layout_width="110dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/square_navigation"
+            android:backgroundTint="#DDDDDD"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
+
+            >
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="8dp"
+                app:materialIcon="logout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Out"
+                android:textColor="@color/black"
+                android:textSize="13dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="280dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_navigation"
+        app:backgroundTint="#FFC700"
+        app:menu="@menu/menu_navigation"
+        app:itemIconSize="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.95"
+
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="33dp"
+            android:layout_marginRight="33dp"
+            android:gravity="center"
+            >
+
+
+            <ImageView
+
+                android:id="@+id/mapNavigation"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_mapbakmainavigation_grey" />
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+
+            <ImageView
+                android:id="@+id/deliveryNavigation"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_riderbakmainavigation" />
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_navigation"
+                android:backgroundTint="#323232"
+
+                >
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_profilebakmainavigation_white" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <!--<com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="280dp"
+        android:layout_height="60dp"
+        app:layout_constraintVertical_bias="0.95"
+        android:background="@drawable/round_navigation"
+        app:backgroundTint="#FFC700"
+        app:itemIconTint="@drawable/selector"
+        app:itemIconSize="40dp"
+        app:itemTextColor="@drawable/selector"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_navigation"
+        android:layout_alignParentBottom = "true"/>-->
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
