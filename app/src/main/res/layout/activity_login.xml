@@ -39,26 +39,46 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
-        app:passwordToggleEnabled="true"
-        android:layout_marginTop="5dp"
-        app:boxStrokeColor="#FFC700"
-        app:startIconDrawable="@drawable/lock_ic">
-
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
+        android:orientation="vertical"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="10dp" />
+            android:layout_gravity="center"
+            android:textColorHint="@color/black"
+            app:passwordToggleEnabled="true"
+            android:layout_marginTop="5dp"
+            app:boxStrokeColor="#FFC700"
+            app:startIconDrawable="@drawable/lock_ic">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="10dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/txtForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="5dp"
+            android:text="Forgot Password?"/>
+
+
+
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btLogin"

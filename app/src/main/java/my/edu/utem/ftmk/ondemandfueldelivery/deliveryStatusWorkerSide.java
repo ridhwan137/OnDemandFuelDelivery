@@ -1,6 +1,7 @@
 package my.edu.utem.ftmk.ondemandfueldelivery;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,18 +9,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -35,10 +42,13 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
     Map<String, Object> ordercreated = new HashMap<>();
     String statusorder;
     private Date date;
+    String waypointID;
+
+    Button btnWorkerUpdateOrderDelivered;
 
     TextView txtDateOrderCreated, txtTimeOrderCreated, txtCustomerNameOrderCreated, txtCustomerMobileOrderCreated, txtWorkerName, txtPetronStation,
             txtOrderNum, txtRiderPlateNum, txtDateOrderAccepted, txtTimeOrderAccepted,
-            txtTimeETA;
+            txtTimeETA, txtAddressCustomerOrderCreated;
 
     LinearLayout lytOrderAccepted, lytOrderAcceptedDetails, lytOnDelivery, lytOnDeliveryDetails, lytOrderDetails, lytEmptyOrder;
 
@@ -61,7 +71,8 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
         txtRiderPlateNum = findViewById(R.id.txtRiderPlateNum);
         txtDateOrderAccepted = findViewById(R.id.txtDateOrderAccepted);
         txtTimeOrderAccepted = findViewById(R.id.txtTimeOrderAccepted);
-        txtTimeETA = findViewById(R.id.txtTimeETA);
+        //txtTimeETA = findViewById(R.id.txtTimeETA);
+        txtAddressCustomerOrderCreated = findViewById(R.id.txtAddressCustomerOrderCreated);
 
         lytOrderAccepted = findViewById(R.id.lytOrderAccepted);
         lytOrderAcceptedDetails = findViewById(R.id.lytOrderAcceptedDetails);
@@ -70,6 +81,8 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
 
         lytOrderDetails = findViewById(R.id.lytOrderDetails);
         lytEmptyOrder = findViewById(R.id.lytEmptyOrder);
+
+        btnWorkerUpdateOrderDelivered = findViewById(R.id.btnWorkerUpdateOrderDelivered);
 
         /*profileNavigation = findViewById(R.id.profileNavigation);
         mapNavigation = findViewById(R.id.mapNavigation);*/
@@ -99,7 +112,7 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
                         return true;
 
                     case R.id.profileNavigation:
-                        startActivity(new Intent(getApplicationContext(), customerProfile.class));
+                        startActivity(new Intent(getApplicationContext(), workerProfile.class));
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -108,142 +121,9 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
         });
 
 
-   /*     DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-
-                    if (doc.exists()) {
-                        Log.d("nak tngok nama customer", "DocumentSnapshot data: " + doc.getData());
-                        statusorder = "pending";
-
-                        Log.e("Nak Tngok Nama User Login", String.valueOf(doc.getData().get("FullName")));
-
-                        FirebaseFirestore.getInstance().collection("waypoint")
-                                .whereEqualTo("status", "pending")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-
-
-                                            FirebaseFirestore.getInstance().collection("waypoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                                                    if (!value.isEmpty() && statusorder.equals("pending")) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-
-                                                        }
-
-                                                    } else {
-                                                        Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                                                        startActivity(intent);
-                                                    }
-
-                                                }
-                                            });
-
-                                        } else {
-
-                                        }
-                                    }
-                                });
-
-
-                    } else {
-                        Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                        startActivity(intent);
-                    }
-                } else {
-                    Log.d("Failed", "get failed with ", task.getException());
-                }
-            }
-        });*/
-
-
-/*
-
-        FirebaseFirestore.getInstance().collection("waypoint")
-                .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .whereEqualTo("status", "delivery")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseFirestore.getInstance().collection("waypoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                                    if (!value.isEmpty()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                            lytOrderAccepted.setVisibility(View.VISIBLE);
-                                            lytOrderAcceptedDetails.setVisibility(View.VISIBLE);
-                                            lytOnDelivery.setVisibility(View.VISIBLE);
-                                            lytOnDeliveryDetails.setVisibility(View.VISIBLE);
-                                            fxgetDate();
-                                            fxGetOrderAcceptedDetails();
-                                        }
-
-                                    } else {
-                                        Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                                        startActivity(intent);
-                                    }
-
-                                }
-                            });
-                        } else {
-
-                            Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
-*/
-
-       /* FirebaseFirestore.getInstance().collection("waypoint")
-                .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .whereEqualTo("status", "delivery")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseFirestore.getInstance().collection("waypoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                                    if (!value.isEmpty()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            lytOrderAccepted.setVisibility(View.VISIBLE);
-                                            lytOrderAcceptedDetails.setVisibility(View.VISIBLE);
-                                            lytOnDelivery.setVisibility(View.VISIBLE);
-                                            lytOnDeliveryDetails.setVisibility(View.VISIBLE);
-                                            fxgetDate();
-                                            fxGetOrderAcceptedDetails();
-                                        }
-
-                                    } else {
-                                        Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                                        startActivity(intent);
-                                    }
-
-                                }
-                            });
-                        } else {
-
-                            Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                            startActivity(intent);
-                        }
-                    }
-                });*/
-
         FirebaseFirestore.getInstance().collection("waypoint")
                 .whereEqualTo("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("status", "ondelivery")
                 .whereNotEqualTo("status", "complete")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -257,14 +137,35 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
                                 fxgetDateOrderAccept();
                                 fxGetOrderAcceptedDetails();
                             }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Not Found", Toast.LENGTH_SHORT).show();
+                                lytOrderDetails.setVisibility(View.INVISIBLE);
+                                lytEmptyOrder.setVisibility(View.VISIBLE);
+                            }
 
 
                         } else {
-                             lytEmptyOrder.setVisibility(View.INVISIBLE);
+
+                            lytOrderDetails.setVisibility(View.INVISIBLE);
+                             lytEmptyOrder.setVisibility(View.VISIBLE);
 
                         }
                     }
                 });
+
+        btnWorkerUpdateOrderDelivered.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Order Complete. Thank You", Toast.LENGTH_SHORT).show();
+                updateOrderDelivered();
+                updateStatusOnWaypoint();
+
+
+            }
+        });
+
+
 
 
 
@@ -290,6 +191,93 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
                         }
                     }
                 });*/
+
+
+    }
+
+    public void updateOrderDelivered(){
+
+        FirebaseFirestore.getInstance().collection("order")
+                .whereEqualTo("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("orderStatus", "active")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (!task.getResult().isEmpty()) {
+
+                            if(task.getResult().getDocuments().get(0).get("orderStatus").toString().equals("active"))
+                            {
+                                String waypointid = task.getResult().getDocuments().get(0).get("waypointid").toString();
+                                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("order").document(waypointid);
+                                documentReference
+                                        .update("orderStatus", "unactive")
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                //Log.d(TAG, "DocumentSnapshot successfully updated!");To
+                                                //Toast.makeText(deliveryStatusWorkerSide.this, "Succesful Update", Toast.LENGTH_SHORT).show();
+
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                //Toast.makeText(deliveryStatusWorkerSide.this, "Unsuccesful Update", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        });
+                            }
+
+
+                        }
+                    }
+                });
+
+
+    }
+
+    public void updateStatusOnWaypoint(){
+        FirebaseFirestore.getInstance().collection("waypoint")
+                .whereEqualTo("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereNotEqualTo("status", "complete")
+                .whereEqualTo("status", "ondelivery")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (!task.getResult().isEmpty()) {
+
+                            if(task.getResult().getDocuments().get(0).get("status").toString().equals("ondelivery"))
+                            {
+                                String waypointid = task.getResult().getDocuments().get(0).get("waypointid").toString();
+                                DocumentReference documentReference = FirebaseFirestore.getInstance().collection("waypoint").document(waypointid);
+                                documentReference
+                                        .update("status", "complete")
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                //Log.d(TAG, "DocumentSnapshot successfully updated!");To
+                                                //Toast.makeText(deliveryStatusWorkerSide.this, "Succesful Update On Waypoint", Toast.LENGTH_SHORT).show();
+
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                //Toast.makeText(deliveryStatusWorkerSide.this, "Unsuccesful Update On Waypoint", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        });
+                            }
+
+
+                        }
+                    }
+                });
+
 
 
     }
@@ -355,6 +343,7 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
     public void fxgetDateOrderAccept(){
         FirebaseFirestore.getInstance().collection("order")
                 .whereEqualTo("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereNotEqualTo("orderStatus", "unactive")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -438,6 +427,10 @@ public class deliveryStatusWorkerSide extends AppCompatActivity {
                                 txtPetronStation.setText(document.getData().get("petrolstation").toString());
                                 txtOrderNum.setText(document.getData().get("orderNumber").toString());
                                 txtRiderPlateNum.setText(document.getData().get("plateNumber").toString());
+                                txtCustomerNameOrderCreated.setText(document.getData().get("FullName").toString());
+                                txtCustomerMobileOrderCreated.setText(document.getData().get("PhoneNum").toString());
+                                txtAddressCustomerOrderCreated.setText(document.getData().get("addresslatlng").toString());
+
 
 
                             }

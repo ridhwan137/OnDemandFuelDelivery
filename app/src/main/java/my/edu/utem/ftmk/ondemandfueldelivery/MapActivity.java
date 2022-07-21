@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 import android.content.pm.PackageManager;
@@ -63,6 +64,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -97,17 +99,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mLocationClient;
     private int GPS_REQUEST_CODE = 9001;
 
+    Marker selectedmarker = null;
     double userLatitude, userLongitude;
     String typeOfFuel;
     String petrolStation;
     Double prices = 10.00, fuelLitre = 0.0;
     double totalPrice;
+    String accountStatus;
 
     Marker workerMarker;
 
     Map<Marker, Map<String, Object>> markerData = new HashMap<>();
 
-    String userType;
+    String userType, workerPetrolStation;
     String waypointID;
     String addresswaypoint;
     String url;
@@ -132,8 +136,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     LocationManager locationManager;
 
 
-
     double Ron95price;
+    Marker marker;
+    LatLng latLng;
 
     Map<String, Object> user = new HashMap<>();
     Map<String, Object> waypoint = new HashMap<>();
@@ -141,11 +146,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     Date date = new Date();
+    Date dateDocWaypoint = new Date();
     Date dateAccept = new Date();
     Random rand = new Random();
-    int upperbound = 999999;
+    int upperbound = 99999999;
+    int waypointbound = 99999999;
     int orderRand = rand.nextInt(upperbound);
+    int wayRand = rand.nextInt(waypointbound);
     String orderNum = "OR" + String.valueOf(orderRand);
+    String waypointRandom = "WY" + String.valueOf(wayRand);
     double workerlatitude = 0, workerlongitude = 0;
 
     @Override
@@ -191,10 +200,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
             connectivityManager.registerNetworkCallback(request, networkCallback);
         }
-
-
-
-
 
 
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -288,11 +293,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId())
-                {
+                switch (menuItem.getItemId()) {
                     case R.id.deliveryNavigation:
                         startActivity(new Intent(getApplicationContext(), deliveryStatusCustomerSide.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.mapNavigation:
@@ -301,12 +305,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     case R.id.profileNavigation:
                         startActivity(new Intent(getApplicationContext(), customerProfile.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;
             }
         });
+
 
         DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -318,6 +323,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     if (document.exists()) {
                         //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         userType = document.getData().get("userType").toString();
+
                         Log.e("kapiaq user", userType);
                         if (userType.equals("client")) {
 
@@ -626,6 +632,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 }
                             });
 
+                            getUserAccountStatus();
+
                             btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
 
 
@@ -633,92 +641,144 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 public void onClick(View view) {
 
 
-                                    FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-                                            //user = documentSnapshot.getData();
+                                    if (accountStatus.equals("verified")) {
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(MapActivity.this);
+                                        dialog.setCancelable(false);
+                                        dialog.setTitle("Confirm your order");
+                                        dialog.setMessage("Are you sure you want to proceed your order?");
+                                        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                //Action for "Yes".
+                                                FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                                                        //user = documentSnapshot.getData();
 
-                                            if (cVPreferredAddress.isClickable()) {
-                                                if (etEnterPreferredAddress.getText().toString().isEmpty()) {
-                                                    Log.e("Koosong", etEnterPreferredAddress.getText().toString());
+                                                        if (cVPreferredAddress.isClickable()) {
+                                                            if (etEnterPreferredAddress.getText().toString().isEmpty()) {
+                                                                Log.e("Koosong", etEnterPreferredAddress.getText().toString());
 
-                                                    try {
-                                                        addresslatlng = geocoder.getFromLocation(userLatitude, userLongitude, 1);
-                                                    } catch (IOException exception) {
-                                                        exception.printStackTrace();
-                                                    }
+                                                                try {
+                                                                    addresslatlng = geocoder.getFromLocation(userLatitude, userLongitude, 1);
+                                                                } catch (IOException exception) {
+                                                                    exception.printStackTrace();
+                                                                }
 
-                                                    addresswaypoint = addresslatlng.get(0).getAddressLine(0);
-                                                } else {
+                                                                addresswaypoint = addresslatlng.get(0).getAddressLine(0);
+                                                            } else {
 
-                                                    String preferredAddress = etEnterPreferredAddress.getText().toString();
-                                                    Log.e("Nohhha alamat", etEnterPreferredAddress.getText().toString());
+                                                                String preferredAddress = etEnterPreferredAddress.getText().toString();
+                                                                Log.e("Nohhha alamat", etEnterPreferredAddress.getText().toString());
 
-                                                    LatLng latLng = getLongLatFromAddress(preferredAddress);
-                                                    Log.e("alamat", latLng.toString());
+                                                                LatLng latLng = getLongLatFromAddress(preferredAddress);
+                                                                Log.e("alamat", latLng.toString());
 
-                                                    userLatitude = latLng.latitude;
-                                                    userLongitude = latLng.longitude;
+                                                                userLatitude = latLng.latitude;
+                                                                userLongitude = latLng.longitude;
 
-                                                    addresswaypoint = etEnterPreferredAddress.getText().toString();
-                                                }
-                                            } else {
-                                                Log.e(etEnterPreferredAddress.toString(), "kosong: ");
-                                                getCurrLoc();
-
-
-                                            }
+                                                                addresswaypoint = etEnterPreferredAddress.getText().toString();
+                                                            }
+                                                        } else {
+                                                            Log.e(etEnterPreferredAddress.toString(), "kosong: ");
+                                                            getCurrLoc();
 
 
-                                            user.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            user.put("priceunit", String.format("%.2f", prices));
-                                            user.put("price", String.format("%.2f", totalPrice));
-                                            user.put("Latitude", userLatitude);
-                                            user.put("Longitude", userLongitude);
-                                            user.put("petrolstation", petrolStation);
+                                                        }
 
-                                            user.put("typeoffuel", typeOfFuel);
-                                            user.put("addresslatlng", addresswaypoint);
-                                            user.put("status", "pending");
-                                            user.put("date", date);
 
-                                            //checkUserfx();
-                                            FirebaseFirestore.getInstance().collection("waypoint")
-                                                    .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                    .whereEqualTo("status", "pending")
-                                                    .get()
-                                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
-                                                            Log.e("kk", String.valueOf(queryDocumentSnapshots.size()));
-                                                            if (queryDocumentSnapshots.size() == 0) {
-                                                                FirebaseFirestore.getInstance().collection("waypoint").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                        user.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                        user.put("priceunit", String.format("%.2f", prices));
+                                                        user.put("price", String.format("%.2f", totalPrice));
+                                                        user.put("Latitude", userLatitude);
+                                                        user.put("Longitude", userLongitude);
+                                                        user.put("petrolstation", petrolStation);
+                                                        user.put("typeoffuel", typeOfFuel);
+                                                        user.put("addresslatlng", addresswaypoint);
+                                                        user.put("status", "pending");
+
+
+                                                        Date javaDate = dateDocWaypoint;
+
+                                                        user.put("waypointid", getDate(javaDate));
+
+                                                        user.put("date", date);
+
+
+                                                        //checkUserfx();
+                                                        FirebaseFirestore.getInstance().collection("waypoint")
+                                                                .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                .whereEqualTo("status", "pending")
+                                                                .get()
+                                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                                     @Override
-                                                                    public void onSuccess(@NonNull DocumentReference documentReference) {
-                                                                        Toast.makeText(MapActivity.this, "Request Submitted", Toast.LENGTH_SHORT).show();
-                                                                        Log.e("Noh Test", user.toString());
-                                                                        layoutRequestFuel.setVisibility(View.INVISIBLE);
-                                                                        layoutOrderDetails.setVisibility(View.VISIBLE);
-                                                                        chooseLocationMenu.setVisibility(View.INVISIBLE);
-                                                                        choosePetrolMenu.setVisibility(View.INVISIBLE);
-                                                                        layoutFake.setVisibility(View.INVISIBLE);
-                                                                        layoutOrderDetails.setVisibility(View.INVISIBLE);
-                                                                        btnAutoLocate.setVisibility(View.VISIBLE);
-                                                                        btnRequestFuelMenu.setVisibility(View.VISIBLE);
-                                                                        layoutHomeNavigation.setVisibility(View.VISIBLE);
-
+                                                                    public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+                                                                        Log.e("kk", String.valueOf(queryDocumentSnapshots.size()));
+                                                                        if (queryDocumentSnapshots.size() == 0) {
+                                                                            FirebaseFirestore.getInstance().collection("waypoint").document(getDate(javaDate)).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void unused) {
+                                                                                    Toast.makeText(MapActivity.this, "Request Submitted", Toast.LENGTH_SHORT).show();
+                                                                                    Log.e("Noh Test", user.toString());
+                                                                                    layoutRequestFuel.setVisibility(View.INVISIBLE);
+                                                                                    layoutOrderDetails.setVisibility(View.VISIBLE);
+                                                                                    chooseLocationMenu.setVisibility(View.INVISIBLE);
+                                                                                    choosePetrolMenu.setVisibility(View.INVISIBLE);
+                                                                                    layoutFake.setVisibility(View.INVISIBLE);
+                                                                                    layoutOrderDetails.setVisibility(View.INVISIBLE);
+                                                                                    btnAutoLocate.setVisibility(View.VISIBLE);
+                                                                                    btnRequestFuelMenu.setVisibility(View.VISIBLE);
+                                                                                    layoutHomeNavigation.setVisibility(View.INVISIBLE);
+                                                                                    bottomNavigationView.setVisibility(View.VISIBLE);
+                                                                                }
+                                                                            });
+                                                                        } else {
+                                                                            Toast.makeText(MapActivity.this, "Your Request Are Pending", Toast.LENGTH_SHORT).show();
+                                                                        }
                                                                     }
                                                                 });
-                                                            } else {
-                                                                Toast.makeText(MapActivity.this, "Your Request Are Pending", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
 
-                                        }
-                                    });
+                                                    }
+                                                });
 
+                                            }
+                                        })
+                                                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        //Action for "Cancel".
+
+                                                    }
+                                                });
+
+                                        final AlertDialog alert = dialog.create();
+                                        alert.show();
+                                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                                        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.black));
+
+
+                                    }
+                                    else
+                                    {
+                                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MapActivity.this);
+
+                                        builder.setMessage("Please request the verification account first to make a order");
+                                        builder.setTitle("Your account are not verified");
+                                        builder.setCancelable(false);
+
+                                        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                dialog.cancel();
+                                            }
+                                        });
+                                        android.app.AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+                                    }
                                 }
+
 
                             });
 
@@ -778,6 +838,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
                         } else {
+                            workerPetrolStation = document.getData().get("petrolstation").toString();
+                            Log.e("Tngok Worker Punya Petrol", workerPetrolStation.toString());
+
                             btnRequestMenu.setVisibility(View.INVISIBLE);
                             btnRequestFuelMenu.setVisibility(View.INVISIBLE);
 
@@ -785,11 +848,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                                 @Override
                                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                                    switch (menuItem.getItemId())
-                                    {
+                                    switch (menuItem.getItemId()) {
                                         case R.id.deliveryNavigation:
                                             startActivity(new Intent(getApplicationContext(), deliveryStatusWorkerSide.class));
-                                            overridePendingTransition(0,0);
+                                            overridePendingTransition(0, 0);
                                             return true;
 
                                         case R.id.mapNavigation:
@@ -797,8 +859,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                             return true;
 
                                         case R.id.profileNavigation:
-                                            startActivity(new Intent(getApplicationContext(), customerProfile.class));
-                                            overridePendingTransition(0,0);
+                                            startActivity(new Intent(getApplicationContext(), workerProfile.class));
+                                            overridePendingTransition(0, 0);
                                             return true;
                                     }
                                     return false;
@@ -1030,28 +1092,46 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
                             for (DocumentSnapshot ds : value) {
-                                if (ds.getString("status").equals("pending")) {
+                                if (ds.getString("status").equals("pending") || ds.getString("status").equals("ondelivery")) {
 
 
                                     Map<String, Object> mGoogleData = ds.getData();
-                                    LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
-                                    Log.e("latlng client", latLng.toString());
+
+                                    //Log.e("latlng client", latLng.toString());
 
                                     Log.e(String.valueOf(userLatitude), String.valueOf(userLongitude));
 
                                     if (userLatitude > (Double) mGoogleData.get("Latitude") - 0.01 && userLatitude < (Double) mGoogleData.get("Latitude") + 0.01 && userLongitude > (Double) mGoogleData.get("Longitude") - 0.01 && userLongitude < (Double) mGoogleData.get("Longitude") + 0.01) {
 
 
-                                        Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+//                                        btnAcceptUserRequest.setVisibility(View.VISIBLE);
+//
+//                                        if (workerPetrolStation.equals("Petronas") &&  !ds.getString("petrolstation").equals("Petronas"))
+//                                        {
+//                                            btnAcceptUserRequest.setVisibility(View.INVISIBLE);
+//
+//                                        }
+//                                        else if (workerPetrolStation.equals("Petron") && !ds.getString("petrolstation").equals("Petron"))
+//                                        {
+//                                            btnAcceptUserRequest.setVisibility(View.INVISIBLE);
+//                                        }
+//                                        else if (workerPetrolStation.equals("Shell") && ds.getString("petrolstation").equals("Petronas") || ds.getString("petrolstation").equals("Petron"))
+//                                        {
+//                                            btnAcceptUserRequest.setVisibility(View.INVISIBLE);
+//                                        }
+
+
                                         Log.e("nak tngok mgoogle data ada apa mat", mGoogleData.toString());
                                         FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 
                                             @Override
                                             //kat sini dalam marker dia akan simpan semua field dalam map marker lepas kita put markerdata DocumentSnapsthot = baca all dri database
                                             public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
-
+                                                Map<String, Object> userData = new HashMap<>();
                                                 userData = documentSnapshot.getData();
+                                                //Log.e("userData Atas", userData.toString());
 
+                                                Map<String, Object> finalUserData = userData;
                                                 FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -1059,24 +1139,67 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                                                         if (task.isSuccessful()) {
 
+                                                            latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
 
-                                                            userData.put("userid", ds.get("userid"));
-                                                            userData.put("price", ds.get("price"));
-                                                            userData.put("typeoffuel", ds.get("typeoffuel"));
-                                                            userData.put("priceunit", ds.get("priceunit"));
-                                                            userData.put("addresslatlng", ds.get("addresslatlng"));
-                                                            userData.put("petrolstation", ds.get("petrolstation"));
-                                                            userData.put("waypointid", ds.getId());
-                                                            userData.put("orderNumber", orderNum);
-                                                            userData.put("workername", task.getResult().get("FullName").toString());
-                                                            userData.put("plateNumber", task.getResult().get("plateNumber").toString());
-                                                            userData.put("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                            userData.put("date", dateAccept);
-                                                            userData.put("orderStatus", "active");
+                                                            Marker marker = null;
+                                                            Map<String, Object> userData2 = finalUserData;
 
-                                                            markerData.put(marker, userData);
+                                                            if (ds.getString("status").equals("ondelivery")) {
+                                                                btnAcceptUserRequest.setVisibility(View.INVISIBLE);
+                                                            }
 
-                                                            Log.e("nak tau marker data", markerData.toString());
+
+                                                            if (ds.getString("petrolstation").equals("Petron") && workerPetrolStation.equals("Petron")) {
+
+                                                                if (ds.getString("status").equals("pending")) {
+                                                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.petronmarker_foreground)));
+                                                                } else if (ds.getString("status").equals("delivery")) {
+                                                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                                                                }
+
+
+                                                            } else if (ds.getString("petrolstation").equals("Petronas") && workerPetrolStation.equals("Petronas")) {
+
+                                                                if (ds.getString("status").equals("pending")) {
+                                                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.petronasmarker_foreground)));
+                                                                } else if (ds.getString("status").equals("ondelivery")) {
+                                                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                                                                }
+
+
+                                                            } else if (ds.getString("petrolstation").equals("Shell") && workerPetrolStation.equals("Shell")) {
+                                                                marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.shellmarker_foreground)));
+                                                            }
+
+
+                                                            finalUserData.put("userid", ds.get("userid"));
+
+                                                            finalUserData.put("price", ds.get("price"));
+                                                            finalUserData.put("typeoffuel", ds.get("typeoffuel"));
+                                                            finalUserData.put("priceunit", ds.get("priceunit"));
+                                                            finalUserData.put("addresslatlng", ds.get("addresslatlng"));
+                                                            finalUserData.put("petrolstation", ds.get("petrolstation"));
+                                                            finalUserData.put("waypointid", ds.getId());
+                                                            finalUserData.put("orderNumber", orderNum);
+                                                            finalUserData.put("workername", task.getResult().get("FullName").toString());
+
+                                                            try {
+                                                                finalUserData.put("plateNumber", task.getResult().get("plateNumber").toString());
+                                                            } catch (Exception e) {
+
+                                                            }
+
+                                                            finalUserData.put("workerid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                            finalUserData.put("date", dateAccept);
+                                                            finalUserData.put("orderStatus", "active");
+
+
+                                                            markerData.put(marker, finalUserData);
+
+                                                            Log.e("userData Mat", finalUserData.toString());
+
+
+                                                            Log.e("nak tau marker data kt part worker", markerData.toString());
 
                                                             btnAcceptUserRequest.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
@@ -1084,7 +1207,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
                                                                     db.collection("order").document(waypointID)
-                                                                            .set(userData)
+                                                                            .set(finalUserData)
                                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                 @Override
                                                                                 public void onSuccess(Void aVoid) {
@@ -1096,12 +1219,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                                                             double latitude = location.getLatitude();
                                                                                             double longitude = location.getLongitude();
                                                                                             String msg = "New Latitude: " + latitude + "New Longitude: " + longitude;
-                                                                                            Toast.makeText(MapActivity.this, msg, Toast.LENGTH_LONG).show();
+                                                                                            //Toast.makeText(MapActivity.this, msg, Toast.LENGTH_LONG).show();
                                                                                             Log.d(String.valueOf(latitude), String.valueOf(longitude));
                                                                                             Map<String, Object> currentWorkerLoc = new HashMap<>();
                                                                                             currentWorkerLoc.put("currentWorkerLatitude", latitude);
                                                                                             currentWorkerLoc.put("currentWorkerLongitude", longitude);
                                                                                             FirebaseFirestore.getInstance().collection("order").document(waypointID).update(currentWorkerLoc);
+
+
                                                                                         }
 
 
@@ -1158,8 +1283,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                                                 public void onSuccess(Void aVoid) {
                                                                                     //Log.d(TAG, "DocumentSnapshot successfully updated!");
 
+                                                                                    //markerData.remove(marker);
 
-                                                                                    markerData.remove(marker);
                                                                                 }
                                                                             })
                                                                             .addOnFailureListener(new OnFailureListener() {
@@ -1183,15 +1308,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         });
 
                                     }
+
+                                } else {
+                                    markerData.remove(marker);
                                 }
+
+
                             }
                         });
+
 
                         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(@NonNull Marker marker) {
                                 layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
-                                url = markerData.get(marker).get("Picture URL").toString();
+                                url = markerData.get(marker).get("PictureURL").toString();
                                 Picasso.with(MapActivity.this).load(url).into(ivProfilePicMarker);
                                 layoutFake.setVisibility(View.VISIBLE);
                                 txtUsername.setText(markerData.get(marker).get("FullName").toString());
@@ -1203,7 +1334,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 txtTypeFuelUser.setText(markerData.get(marker).get("typeoffuel").toString());
                                 waypointID = markerData.get(marker).get("waypointid").toString();
 
-                                Log.e("Test Apa Ada", markerData.get(marker).toString());
+                                // selectedmarker = marker;
+                                Log.e("Test Apa Ada Marker USer kt Worker", markerData.get(marker).toString());
                                 //Toast.makeText(MapActivity.this, markerData.get(marker).get("Email").toString(), Toast.LENGTH_SHORT).show();
                                 return false;
                             }
@@ -1224,7 +1356,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 LatLng latLng = new LatLng((Double) mGoogleData.get("Latitude"), (Double) mGoogleData.get("Longitude"));
 
 
-                                Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.markerequestfuel_foreground)));
+                                if (ds.getString("petrolstation").equals("Petron")) {
+                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.petronmarker_foreground)));
+                                } else if (ds.getString("petrolstation").equals("Petronas")) {
+                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.petronasmarker_foreground)));
+                                } else if (ds.getString("petrolstation").equals("Shell")) {
+                                    marker = mGoogleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.mipmap.shellmarker_foreground)));
+                                } else {
+
+                                }
+
                                 Log.e("nak userid", mGoogleData.toString());
                                 FirebaseFirestore.getInstance().collection("users").document(mGoogleData.get("userid").toString()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 
@@ -1233,6 +1374,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                     public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
                                         Map<String, Object> userData = new HashMap<>();
                                         userData = documentSnapshot.getData();
+
 
                                         userData.put("price", ds.get("price"));
                                         userData.put("typeoffuel", ds.get("typeoffuel"));
@@ -1257,7 +1399,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                                     layoutRequestFuelUserDetail.setVisibility(View.VISIBLE);
                                     layoutFake.setVisibility(View.VISIBLE);
-                                    url = markerData.get(marker).get("Picture URL").toString();
+                                    url = markerData.get(marker).get("PictureURL").toString();
                                     Picasso.with(MapActivity.this).load(url).into(ivProfilePicMarker);
                                     txtUsername.setText(markerData.get(marker).get("FullName").toString());
                                     txtAddressUser.setText(markerData.get(marker).get("addresslatlng").toString());
@@ -1534,7 +1676,32 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
-    public void displayProfile(){
+    public void getUserAccountStatus() {
+        DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("ProfileActivity", "DocumentSnapshot data: " + document.getData());
+
+
+                        accountStatus = document.getData().get("accountStatus").toString();
+//                        new EditProfileActivity.FetchImage(url).start();
+                        Picasso.with(MapActivity.this).load(url).into(ivProfilePic);
+
+                    } else {
+                        Log.d("ProfileActivity", "No such document");
+                    }
+                } else {
+                    Log.d("ProfileActivity", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void displayProfile() {
 
         DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -1546,8 +1713,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         Log.d("ProfileActivity", "DocumentSnapshot data: " + document.getData());
 
 
-
-                        url = document.getData().get("Picture URL").toString();
+                        url = document.getData().get("PictureURL").toString();
 //                        new EditProfileActivity.FetchImage(url).start();
                         Picasso.with(MapActivity.this).load(url).into(ivProfilePic);
 
@@ -1601,10 +1767,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    String getDate(Date javaDate) {
+        /* Calendar cal = Calendar.getInstance();*/
+
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
+
+        String localDate = sdf.format(javaDate);
+        Log.d("tngok tarikh", localDate);
+
+        return localDate;
+    }
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 
     public void fxCheckUserType() {
 

@@ -17,6 +17,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnDemandFuelDelivery">
         <activity
+            android:name=".ResetPassword"
+            android:exported="true" />
+        <activity
+            android:name=".AdminVerificationRequestDetail"
+            android:exported="true" />
+        <activity
+            android:name=".AdminVerificationRequest"
+            android:exported="true" />
+        <activity
+            android:name=".workerProfile"
+            android:exported="true" />
+        <activity
+            android:name=".customerVerifyAccount"
+            android:exported="true" />
+        <activity
+            android:name=".CustomerOrderRecord"
+            android:exported="true" />
+        <activity
+            android:name=".AdminUpdateFuelPrice"
+            android:exported="true" />
+        <activity
+            android:name=".AdminRegisterWorkerAccount"
+            android:exported="true" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="true" />
+        <activity
             android:name=".deliveryStatusWorkerSide"
             android:exported="true" />
         <activity

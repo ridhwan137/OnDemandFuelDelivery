@@ -21,15 +21,39 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/circleprofilepicture" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="55dp"
+            >
+
+
         <TextView
             android:id="@+id/txtEmailUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="55dp"
             android:text="Azghi"
+            android:layout_marginRight="10dp"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+            <net.steamcrafted.materialiconlib.MaterialIconView
+                android:id="@+id/iconCheckVerify"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:materialIcon="check_circle"
+                android:visibility="invisible"
+                app:materialIconColor="#48A7F3" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -136,6 +160,7 @@
 
             <LinearLayout
 
+                android:onClick="toCustomerOrder"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/square_navigation"
@@ -158,6 +183,7 @@
         </LinearLayout>
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -177,10 +203,12 @@
 
                 >
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_nightmodebakmainavigation" />
+                <net.steamcrafted.materialiconlib.MaterialIconView
+
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:materialIconColor="#323232"
+                    app:materialIcon="account_check" />
             </LinearLayout>
 
             <TextView
@@ -188,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
-                android:text="Night Mode"
+                android:text="Verify Account"
                 android:textColor="@color/black" />
 
             <View
@@ -196,10 +224,26 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+            <LinearLayout
+                android:id="@+id/lytVerifyAccount"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/square_navigation"
+                android:backgroundTint="#DDDDDD"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
 
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="40dp" />
+                >
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:id="@+id/mvVerifyAccount"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+                    app:materialIcon="chevron_right" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

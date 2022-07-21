@@ -1,18 +1,24 @@
 package my.edu.utem.ftmk.ondemandfueldelivery;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
@@ -40,10 +46,12 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
             txtOrderNum, txtRiderPlateNum, txtDateOrderAccepted, txtTimeOrderAccepted,
             txtTimeETA;
 
-    LinearLayout lytOrderAccepted, lytOrderAcceptedDetails, lytOnDelivery, lytOnDeliveryDetails;
+    Button btnCancelOrder;
+
+    LinearLayout lytOrderAccepted, lytOrderAcceptedDetails, lytOnDelivery, lytOnDeliveryDetails ,lytOrderEmpty, lytMainOrderCreated, lytTellUser;
 
     ImageView profileNavigation, mapNavigation;
-
+    String waypointid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +67,17 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
         txtRiderPlateNum = findViewById(R.id.txtRiderPlateNum);
         txtDateOrderAccepted = findViewById(R.id.txtDateOrderAccepted);
         txtTimeOrderAccepted = findViewById(R.id.txtTimeOrderAccepted);
-        txtTimeETA = findViewById(R.id.txtTimeETA);
+        //txtTimeETA = findViewById(R.id.txtTimeETA);
+
+        btnCancelOrder = findViewById(R.id.btnCancelOrder);
 
         lytOrderAccepted = findViewById(R.id.lytOrderAccepted);
         lytOrderAcceptedDetails = findViewById(R.id.lytOrderAcceptedDetails);
         lytOnDelivery = findViewById(R.id.lytOnDelivery);
         lytOnDeliveryDetails = findViewById(R.id.lytOnDeliveryDetails);
+        lytOrderEmpty = findViewById(R.id.lytOrderEmpty);
+        lytMainOrderCreated = findViewById(R.id.lytMainOrderCreated);
+        lytTellUser = findViewById(R.id.lytTellUser);
 
         /*profileNavigation = findViewById(R.id.profileNavigation);
         mapNavigation = findViewById(R.id.mapNavigation);*/
@@ -270,7 +283,11 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
                                 lytOrderAcceptedDetails.setVisibility(View.INVISIBLE);
                                 lytOnDelivery.setVisibility(View.INVISIBLE);
                                 lytOnDeliveryDetails.setVisibility(View.INVISIBLE);
+                                lytMainOrderCreated.setVisibility(View.VISIBLE);
+                                lytTellUser.setVisibility(View.VISIBLE);
                                 fxgetDate();
+                                waypointid = task.getResult().getDocuments().get(0).getData().get("waypointid").toString();
+                                //Toast.makeText(getApplicationContext(), waypointid, Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
@@ -278,6 +295,8 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
                                 lytOrderAcceptedDetails.setVisibility(View.VISIBLE);
                                 lytOnDelivery.setVisibility(View.VISIBLE);
                                 lytOnDeliveryDetails.setVisibility(View.VISIBLE);
+                                lytMainOrderCreated.setVisibility(View.VISIBLE);
+                                lytTellUser.setVisibility(View.INVISIBLE);
                                 fxgetDate();
                                 fxgetDateOrderAccept();
                                 fxGetOrderAcceptedDetails();
@@ -287,36 +306,53 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
 
                         } else {
 
-                            Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                            startActivity(intent);
+                            lytOrderEmpty.setVisibility(View.VISIBLE);
+
+
                         }
                     }
                 });
 
-
-
-
-
-      /*  FirebaseFirestore.getInstance().collection("waypoint")
-                .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .whereEqualTo("status", "complete")
-                .whereEqualTo("deliveryStatus", "delivered")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        btnCancelOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(deliveryStatusCustomerSide.this);
+                dialog.setCancelable(false);
+                dialog.setTitle("Cancel The Order");
+                dialog.setMessage("Are you sure you want to cancel your order?");
+                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                                startActivity(intent);
-                            }
-                        } else {
-
-                            Intent intent = new Intent(deliveryStatusCustomerSide.this, deliveryStatusEmptyCustomerSide.class);
-                            startActivity(intent);
-                        }
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Action for "Logout".
+                        cancelOrder();
+                        lytTellUser.setVisibility(View.INVISIBLE);
+                        lytOrderEmpty.setVisibility(View.VISIBLE);
+                        lytOrderAccepted.setVisibility(View.INVISIBLE);
+                        lytOrderAcceptedDetails.setVisibility(View.INVISIBLE);
+                        lytOnDelivery.setVisibility(View.INVISIBLE);
+                        lytOnDeliveryDetails.setVisibility(View.INVISIBLE);
+                        lytMainOrderCreated.setVisibility(View.INVISIBLE);
                     }
-                });*/
+                })
+                        .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Action for "Cancel".
+
+                            }
+                        });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.bakmaiyellow));
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.black));
+
+
+
+            }
+        });
+
 
 
     }
@@ -350,6 +386,7 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
 
         FirebaseFirestore.getInstance().collection("waypoint")
                 .whereEqualTo("userid", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereNotEqualTo("status", "complete")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -407,6 +444,24 @@ public class deliveryStatusCustomerSide extends AppCompatActivity {
                         } else {
 
                         }
+                    }
+                });
+    }
+
+    public void cancelOrder(){
+        db.collection("waypoint").document(waypointid)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(), "Succesfully cancel the order", Toast.LENGTH_SHORT).show();
+                        Log.d("Order Delete", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Order Tak Delete", "Error deleting document", e);
                     }
                 });
     }

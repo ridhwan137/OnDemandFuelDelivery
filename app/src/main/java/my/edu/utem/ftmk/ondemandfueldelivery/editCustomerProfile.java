@@ -29,8 +29,8 @@ public class editCustomerProfile extends AppCompatActivity {
 
     LinearLayout lytCustomerName, lytCustomerAddress, lytCustomerPassword, lytCustomerMobileNum;
 
-    TextView tvName, tvPhone, tvAddress, tvPassword;
-
+    TextView tvName, tvPhone, tvAddress, tvPassword, txtVerified;
+    String userType;
     MaterialIconView mvCancel;
 
     FirebaseFirestore db;
@@ -48,6 +48,7 @@ public class editCustomerProfile extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         tvAddress = findViewById(R.id.tvAddress);
         tvPassword = findViewById(R.id.tvPassword);
+        txtVerified = findViewById(R.id.txtVerified);
 
         lytCustomerName = findViewById(R.id.lytCustomerName);
         lytCustomerAddress = findViewById(R.id.lytCustomerAddress);
@@ -98,8 +99,19 @@ public class editCustomerProfile extends AppCompatActivity {
         mvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(editCustomerProfile.this, customerProfile.class);
-                startActivity(intent);
+                if (userType.equals("client"))
+                {
+                    Intent intent = new Intent(editCustomerProfile.this, customerProfile.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent(editCustomerProfile.this, workerProfile.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+
             }
         });
     }
@@ -118,6 +130,23 @@ public class editCustomerProfile extends AppCompatActivity {
                         tvName.setText(document.getData().get("FullName").toString());
                         tvPhone.setText(document.getData().get("PhoneNum").toString());
                         tvAddress.setText(document.getData().get("Address").toString());
+                        userType = document.getData().get("userType").toString();
+
+                        try {
+                            if (document.getData().get("accountStatus").equals("verified"))
+                            {
+                                txtVerified.setVisibility(View.VISIBLE);
+                            }
+                            else
+                            {
+                                txtVerified.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+
 
 
                     } else {

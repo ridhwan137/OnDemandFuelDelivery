@@ -48,6 +48,8 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import net.steamcrafted.materialiconlib.MaterialIconView;
+
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
@@ -65,10 +67,12 @@ public class customerProfile extends AppCompatActivity {
 
 
     ImageView deliveryNavigation, mapNavigation, ivProfilePic;
-    LinearLayout btnToEditProfile, mvLogout;
+    LinearLayout btnToEditProfile, mvLogout, lytVerifyAccount;
     TextView txtEmailUser;
     Map<String, Object> user = new HashMap<>();
     private FirebaseFirestore db;
+    String userType;
+    MaterialIconView iconCheckVerify;
 
 
     ActivityMainBinding binding;
@@ -93,37 +97,88 @@ public class customerProfile extends AppCompatActivity {
         ivProfilePic = findViewById(R.id.ivProfilePic);
 
         btnToEditProfile = findViewById(R.id.btnToEditProfile);
+        lytVerifyAccount = findViewById(R.id.lytVerifyAccount);
         mvLogout = findViewById(R.id.mvLogout);
 
 
         txtEmailUser = findViewById(R.id.txtEmailUser);
+        iconCheckVerify = findViewById(R.id.iconCheckVerify);
 
-        //initialize and assign variable bottom navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        //set Map Selected
-        bottomNavigationView.setSelectedItemId(R.id.profileNavigation);
-
-        //perform itemselectedlistener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-               switch (menuItem.getItemId())
-               {
-                   case R.id.deliveryNavigation:
-                       startActivity(new Intent(getApplicationContext(), deliveryStatusCustomerSide.class));
-                       overridePendingTransition(0,0);
-                       return true;
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
 
-                   case R.id.mapNavigation:
-                       startActivity(new Intent(getApplicationContext(), MapActivity.class));
-                       overridePendingTransition(0,0);
-                       return true;
+                    if (document.exists()) {
+                        userType = document.getData().get("userType").toString();
 
-                   case R.id.profileNavigation:
-                       return true;
-               }
-                return false;
+                        if (userType.equals("client")) {
+
+                            //initialize and assign variable bottom navigation
+                            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+                            //set Map Selected
+                            bottomNavigationView.setSelectedItemId(R.id.profileNavigation);
+
+                            //perform itemselectedlistener
+                            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                                @Override
+                                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                                    switch (menuItem.getItemId()) {
+                                        case R.id.deliveryNavigation:
+                                            startActivity(new Intent(getApplicationContext(), deliveryStatusCustomerSide.class));
+                                            overridePendingTransition(0, 0);
+                                            return true;
+
+                                        case R.id.mapNavigation:
+                                            startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                                            overridePendingTransition(0, 0);
+                                            return true;
+
+                                        case R.id.profileNavigation:
+                                            return true;
+                                    }
+                                    return false;
+                                }
+                            });
+
+
+                        } else {
+                            //initialize and assign variable bottom navigation
+                            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+                            //set Map Selected
+                            bottomNavigationView.setSelectedItemId(R.id.profileNavigation);
+
+                            //perform itemselectedlistener
+                            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                                @Override
+                                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                                    switch (menuItem.getItemId()) {
+                                        case R.id.deliveryNavigation:
+                                            startActivity(new Intent(getApplicationContext(), deliveryStatusWorkerSide.class));
+                                            overridePendingTransition(0, 0);
+                                            return true;
+
+                                        case R.id.mapNavigation:
+                                            startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                                            overridePendingTransition(0, 0);
+                                            return true;
+
+                                        case R.id.profileNavigation:
+                                            return true;
+                                    }
+                                    return false;
+                                }
+                            });
+
+                        }
+                    }
+                }
+
             }
         });
 
@@ -158,7 +213,13 @@ public class customerProfile extends AppCompatActivity {
             }
         });
 
-
+        lytVerifyAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(customerProfile.this, customerVerifyAccount.class);
+                startActivity(intent);
+            }
+        });
 
 
         mvLogout.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +229,7 @@ public class customerProfile extends AppCompatActivity {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(customerProfile.this);
                 dialog.setCancelable(false);
                 dialog.setTitle("Logout Confirmation");
-                dialog.setMessage("Are you sure you want to logout?" );
+                dialog.setMessage("Are you sure you want to logout?");
                 dialog.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -187,7 +248,7 @@ public class customerProfile extends AppCompatActivity {
                 final AlertDialog alert = dialog.create();
                 alert.show();
 
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.bakmaiyellow));
                 alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.black));
             }
         });
@@ -199,24 +260,17 @@ public class customerProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean pick = true;
-                if (pick ==true)
-                {
-                    if (!checkCameraPermission())
-                    {
+                if (pick == true) {
+                    if (!checkCameraPermission()) {
                         requestCameraPermission();
-                    }
-                    else {
+                    } else {
                         PickImage();
                     }
 
-                }
-                else
-                {
-                    if (!checkStoragePermission())
-                    {
+                } else {
+                    if (!checkStoragePermission()) {
                         requestStoragePermission();
-                    }
-                    else {
+                    } else {
                         PickImage();
                     }
                 }
@@ -227,7 +281,7 @@ public class customerProfile extends AppCompatActivity {
 
     }
 
-    public void displayProfile(){
+    public void displayProfile() {
 
         DocumentReference docRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -239,11 +293,27 @@ public class customerProfile extends AppCompatActivity {
                         Log.d("ProfileActivity", "DocumentSnapshot data: " + document.getData());
 
 
-
-                        url = document.getData().get("Picture URL").toString();
+                        url = document.getData().get("PictureURL").toString();
 //                        new EditProfileActivity.FetchImage(url).start();
                         Picasso.with(customerProfile.this).load(url).into(ivProfilePic);
                         txtEmailUser.setText(document.getData().get("Email").toString());
+
+                        try {
+                            if (document.getData().get("accountStatus").equals("verified"))
+                            {
+                                iconCheckVerify.setVisibility(View.VISIBLE);
+                            }
+                            else
+                            {
+                                iconCheckVerify.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+
+
 
                     } else {
                         Log.d("ProfileActivity", "No such document");
@@ -263,7 +333,7 @@ public class customerProfile extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-                try{
+                try {
                     InputStream stream = getContentResolver().openInputStream(resultUri);
                     Bitmap bitmap = BitmapFactory.decodeStream(stream);
                     ivProfilePic.setImageBitmap(bitmap);
@@ -271,10 +341,10 @@ public class customerProfile extends AppCompatActivity {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
                     Date now = new Date();
                     String fileName = formatter.format(now);
-                    storageReference = FirebaseStorage.getInstance().getReference("images/"+ " profilepic " +fileName);
+                    storageReference = FirebaseStorage.getInstance().getReference("images/" + " profilepic " + fileName);
 
                     //upload the photo uploaded from camera to storage
-                    storageReference.putFile(getImageUri(getApplicationContext(),bitmap))
+                    storageReference.putFile(getImageUri(getApplicationContext(), bitmap))
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -304,13 +374,12 @@ public class customerProfile extends AppCompatActivity {
 
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-                            Toast.makeText(customerProfile.this,"Failed to Upload",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(customerProfile.this, "Failed to Upload", Toast.LENGTH_SHORT).show();
 
 
                         }
                     });
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -327,12 +396,12 @@ public class customerProfile extends AppCompatActivity {
         return Uri.parse(path);
     }
 
-    public void updatePictureUrl(){
+    public void updatePictureUrl() {
 
         DocumentReference nameRef = db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         nameRef
-                .update("Picture URL", url)
+                .update("PictureURL", url)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -353,21 +422,21 @@ public class customerProfile extends AppCompatActivity {
     }
 
 
-    private  boolean checkCameraPermission(){
-        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
         return res1 && res2;
 
     }
 
-    private boolean checkStoragePermission(){
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         return res2;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestCameraPermission(){
+    private void requestCameraPermission() {
         requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
     }
 
@@ -382,9 +451,7 @@ public class customerProfile extends AppCompatActivity {
     }
 
 
-
-
-    public void logoutUser(){
+    public void logoutUser() {
 
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(customerProfile.this, LoginActivity.class);
@@ -392,13 +459,15 @@ public class customerProfile extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed()
-    {
-        moveTaskToBack(true);
+    public void toCustomerOrder(View view){
+        Intent intent = new Intent(customerProfile.this, CustomerOrderRecord.class);
+        startActivity(intent);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
 
 }

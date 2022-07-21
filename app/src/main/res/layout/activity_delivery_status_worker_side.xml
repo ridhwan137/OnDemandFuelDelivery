@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/lytOrderDetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="580dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,13 +57,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="40dp"
             android:orientation="horizontal">
 
 
             <ImageView
                 android:layout_width="25dp"
-                android:layout_height="110dp"
+                android:layout_height="175dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="15dp"
 
@@ -79,14 +79,14 @@
                     android:id="@+id/txtDateOrderCreated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="-" />
+                    android:layout_gravity="start"
+                    />
 
                 <TextView
                     android:id="@+id/txtTimeOrderCreated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-"
+                    android:layout_gravity="start"
 
                     />
 
@@ -94,7 +94,7 @@
                     android:id="@+id/txtCustomerNameOrderCreated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-"
+                    android:layout_gravity="start"
 
                     />
 
@@ -102,9 +102,20 @@
                     android:id="@+id/txtCustomerMobileOrderCreated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-"
+                    android:layout_gravity="start"
+
 
                     />
+
+                <TextView
+                    android:id="@+id/txtAddressCustomerOrderCreated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+
+                    />
+
+
 
             </LinearLayout>
 
@@ -294,19 +305,23 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+
+            android:text="Update the delivery status after delivered"
+            android:textColor="@color/black"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/ic_riderbakmai" />
+            />
 
         <Button
+            android:id="@+id/btnWorkerUpdateOrderDelivered"
             android:layout_width="170dp"
             android:layout_height="50dp"
             android:background="@drawable/round_shape"
             android:textSize="12sp"
-            android:layout_margin="20dp"
+            android:layout_marginTop="15dp"
             android:text="Order Delivered"
             android:layout_gravity="center"
             />
