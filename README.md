@@ -1,6 +1,6 @@
 # Bak Mai (On Demand Fuel Delivery System)
 
-**Project Title:** Bak Mai (On Demand Fuel Delivery System)
+**Application Title:** Bak Mai
 
 ![Coding](https://github.com/azriawi/OnDemandFuelDelivery/blob/master/GithubImage/BakMaiPoster.png)
 
