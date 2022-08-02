@@ -13,4 +13,4 @@ Bak Mai aims to produce a successful user-friendly app that can give satisfactio
 
 ##  ABSTRACT 
 
-![Coding](https://github.com/azriawi/Artificial-Intelligence-Project/blob/main/Image/AI%20COVER.png)
+![Coding](https://github.com/azriawi/OnDemandFuelDelivery/blob/master/GithubImage/BakMaiPoster.png)
